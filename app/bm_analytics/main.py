@@ -9,6 +9,8 @@ import time
 from src import config, loader
 from src import layer1 as _layer1
 from src import layer2 as _layer2
+from src import layer3_segmentation as _l3seg
+from src import layer3_timeseries as _l3ts
 
 
 def _parse_args() -> argparse.Namespace:
@@ -66,6 +68,22 @@ def main() -> int:
             l2.to_csv(l2_path, index=False)
             logging.info("Wrote %d rows → %s", len(l2), l2_path)
 
+        with config.timed("layer3_segmentation"):
+            l3seg = _l3seg.build(l1)
+
+        with config.timed("write_layer3_segmentation"):
+            l3seg_path = output_dir / "layer3_segmentation.csv"
+            l3seg.to_csv(l3seg_path, index=False)
+            logging.info("Wrote %d rows → %s", len(l3seg), l3seg_path)
+
+        with config.timed("layer3_timeseries"):
+            l3ts = _l3ts.build(raw)
+
+        with config.timed("write_layer3_timeseries"):
+            l3ts_path = output_dir / "layer3_timeseries.csv"
+            l3ts.to_csv(l3ts_path, index=False)
+            logging.info("Wrote %d rows → %s", len(l3ts), l3ts_path)
+
     except Exception as exc:
         if args.verbose:
             raise
@@ -76,7 +94,9 @@ def main() -> int:
     print(
         f"Done: {len(raw)} rows in → "
         f"layer1: {len(l1)} rows, "
-        f"layer2: {len(l2)} rows  ({elapsed:.2f} s)"
+        f"layer2: {len(l2)} rows, "
+        f"layer3_seg: {len(l3seg)} rows, "
+        f"layer3_ts: {len(l3ts)} rows  ({elapsed:.2f} s)"
     )
     return 0
 

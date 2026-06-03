@@ -12,6 +12,8 @@ INPUT_FILE = BM_ANALYTICS_DIR / "input" / "raw_report.csv"
 OUTPUT_DIR = BM_ANALYTICS_DIR / "output"
 LAYER1_FILE = OUTPUT_DIR / "layer1_report.csv"
 LAYER2_FILE = OUTPUT_DIR / "layer2_report.csv"
+LAYER3_SEGMENTATION_FILE = OUTPUT_DIR / "layer3_segmentation.csv"
+LAYER3_TIMESERIES_FILE = OUTPUT_DIR / "layer3_timeseries.csv"
 
 MONTH_COLS = [
     "Jan", "Feb", "Mar", "Apr", "May", "Jun",

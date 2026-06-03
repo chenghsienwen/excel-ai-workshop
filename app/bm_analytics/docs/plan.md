@@ -364,3 +364,68 @@ python -m pytest tests/          # or: python -m unittest discover tests/
 - Full `trend.py` implementation with charting-ready output.
 - Incremental mode: skip regeneration when input mtime < output mtime.
 - Layer 3: cross-product / cross-region ranking views.
+
+---
+
+## Data Analysis Concept Mapping
+
+Assessment of standard BI/analytics frameworks against `raw_report.csv`.
+
+### Fully applicable — can generate from current data
+
+| Concept | How it maps |
+|---|---|
+| **Segmentation** | Slice revenue by region, product (CDE/PJ), rev_op_type (Gross/Net/Op), or any combination. Layer 1 already provides per-cohort aggregations; a ranking/cross-tab view adds the segmentation layer. |
+| **Time-Series Analysis** | Month-by-month Actual vs Budget vs Forecast trends, MoM growth rates, seasonal patterns (which quarters are strongest), anomaly months where Actual deviates sharply from Budget. |
+
+### Partially applicable — requires adaptation
+
+| Concept | Constraint | Adapted form |
+|---|---|---|
+| **Retention Rate** | Designed for user/subscription data, not revenue. | **Budget achievement rate over time** — does a region consistently hit its monthly budget across the year? Produces a retention-curve-shaped output per cohort. |
+| **LTV (Customer Lifetime Value)** | No customer-level or acquisition cost data. | **Cumulative revenue per cohort** — total Gross revenue per (region × product) over the two years as a proxy for segment value. |
+
+### Not applicable — data does not support
+
+| Concept | Reason |
+|---|---|
+| **Funnel Analysis** | No sequential step data; our data is periodic revenue, not a user journey. |
+| **CAC / Attribution Modeling** | No marketing spend or channel data. |
+| **Churn Rate** | No user-level subscription tracking. |
+
+---
+
+## Layer 3 — Planned Modules (from concept mapping)
+
+Two new report modules to build on top of `raw_report.csv`:
+
+### `layer3_segmentation.py`
+
+Cross-tab ranking report: which regions/products are performing best or worst.
+
+**Output**: `output/layer3_segmentation.csv`
+
+| Column | Description |
+|---|---|
+| `product`, `year`, `rev_op_type`, `sales_budget_type` | Segment dimensions |
+| `region` | Ranked entity |
+| `total`, `ytd` | Absolute revenue |
+| `ytd_gap` | Actual vs Budget gap |
+| `rank_total` | Region rank by total revenue within segment |
+| `rank_ytd_gap` | Region rank by YTD gap (worst to best) |
+| `share_pct` | Region's share of segment total (%) |
+
+### `layer3_timeseries.py`
+
+Month-by-month trend series per cohort.
+
+**Output**: `output/layer3_timeseries.csv`
+
+| Column | Description |
+|---|---|
+| `region`, `product`, `year`, `rev_op_type`, `sales_budget_type` | Cohort key |
+| `month` | Month abbreviation (Jan–Dec) |
+| `amount` | Raw monthly amount |
+| `mom_growth` | Month-over-month growth rate vs prior month (ratio; null for Jan) |
+| `vs_budget` | `amount(Actual) - amount(Budget)` for same month |
+| `seasonal_index` | Month's share of annual total (amount / total); indicates peak/trough months |
