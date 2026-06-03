@@ -32,5 +32,9 @@ Thumbs.db
 .vscode/
 *.swp
 
+# Node
+node_modules/
+
 # Project output
 app/bm_report/output/*.csv
+app/bm_analytics/output/*.csv
