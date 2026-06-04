@@ -79,8 +79,9 @@ def build():
 </head>
 <body>
   <div id="root"></div>
-  <script src="https://cdn.jsdelivr.net/npm/@stlite/browser@{STLITE_VERSION}/build/stlite.js"></script>
-  <script>
+  <script type="module">
+    import {{ mount }} from "https://cdn.jsdelivr.net/npm/@stlite/browser@{STLITE_VERSION}/build/stlite.js";
+
     const pyFiles = {py_files_json};
 
     // Decode CSV data from base64 and merge into the files map.
@@ -92,7 +93,7 @@ def build():
       ])
     );
 
-    stlite.mount(
+    mount(
       {{
         requirements: ["plotly", "pandas"],
         entrypoint: "app.py",
