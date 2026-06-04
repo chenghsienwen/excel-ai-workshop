@@ -16,7 +16,7 @@ import json
 import webbrowser
 from pathlib import Path
 
-STLITE_VERSION = "0.81.0"
+STLITE_VERSION = "1.8.0"
 
 APP_DIR = Path(__file__).parent
 DIST_DIR = APP_DIR / "dist"
