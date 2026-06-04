@@ -69,7 +69,7 @@ jobs:
           if [ -f bm-viewer-cache/index.html ]; then
             cp bm-viewer-cache/index.html _site/bm-viewer/
           else
-            echo '<meta http-equiv="refresh" content="0;url=/">' > _site/bm-viewer/index.html
+            echo '<meta http-equiv="refresh" content="0;url=/excel-ai-workshop/">' > _site/bm-viewer/index.html
           fi
 
       - name: Upload Pages artifact
