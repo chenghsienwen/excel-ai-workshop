@@ -1,0 +1,85 @@
+name: Deploy Slides to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - slides.md
+      - components/**
+      - pages/**
+      - snippets/**
+      - package.json
+      - pnpm-lock.yaml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Enable pnpm
+        run: corepack enable
+
+      - name: Download theme package
+        run: gh release download theme-assets --pattern "slidev-theme-viewsonic-proav-*.tgz"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build slides
+        run: pnpm slidev build --base /excel-ai-workshop/
+
+      - name: Save slides cache
+        uses: actions/cache/save@v4
+        with:
+          path: dist/
+          key: slides-dist-${{ hashFiles('slides.md', 'components/**', 'pages/**', 'snippets/**', 'pnpm-lock.yaml') }}
+
+      - name: Restore bm-viewer cache
+        uses: actions/cache/restore@v4
+        with:
+          path: bm-viewer-cache/
+          key: bm-viewer-dist-placeholder
+          restore-keys: bm-viewer-dist-
+
+      - name: Assemble site
+        run: |
+          mkdir -p _site/bm-viewer
+          cp -r dist/. _site/
+          if [ -f bm-viewer-cache/index.html ]; then
+            cp bm-viewer-cache/index.html _site/bm-viewer/
+          else
+            echo '<meta http-equiv="refresh" content="0;url=/">' > _site/bm-viewer/index.html
+          fi
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site/
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

@@ -3,6 +3,8 @@ name: Deploy BM Report Viewer to GitHub Pages
 on:
   push:
     branches: [main]
+    paths:
+      - app/bm_report_viewer/**
   workflow_dispatch:
 
 permissions:
@@ -31,10 +33,33 @@ jobs:
       - name: Build static site
         run: python app/bm_report_viewer/build.py
 
+      - name: Save bm-viewer cache
+        uses: actions/cache/save@v4
+        with:
+          path: app/bm_report_viewer/dist/
+          key: bm-viewer-dist-${{ hashFiles('app/bm_report_viewer/**') }}
+
+      - name: Restore slides cache
+        uses: actions/cache/restore@v4
+        with:
+          path: slides-cache/
+          key: slides-dist-placeholder
+          restore-keys: slides-dist-
+
+      - name: Assemble site
+        run: |
+          mkdir -p _site/bm-viewer
+          if [ -d slides-cache ] && [ "$(ls -A slides-cache)" ]; then
+            cp -r slides-cache/. _site/
+          else
+            echo '<meta http-equiv="refresh" content="0;url=/excel-ai-workshop/bm-viewer/">' > _site/index.html
+          fi
+          cp app/bm_report_viewer/dist/index.html _site/bm-viewer/
+
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: app/bm_report_viewer/dist/
+          path: _site/
 
   deploy:
     needs: build

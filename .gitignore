@@ -38,3 +38,6 @@ node_modules/
 # Project output
 app/bm_report/output/*.csv
 app/bm_analytics/output/*.csv
+
+# Slidev theme (private — stored as THEME_TGZ secret in CI)
+slidev-theme-viewsonic-proav-*.tgz
