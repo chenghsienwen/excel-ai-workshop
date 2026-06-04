@@ -22,6 +22,7 @@ APP_DIR = Path(__file__).parent
 DIST_DIR = APP_DIR / "dist"
 
 PY_FILES = [
+    ".streamlit/config.toml",
     "app.py",
     "pages/1_Period_Summary.py",
     "pages/2_KPI_Metrics.py",
