@@ -48,12 +48,12 @@ jobs:
 
       - name: Assemble site
         run: |
-          mkdir -p _site/bm-viewer
-          if [ -d slides-cache ] && [ "$(ls -A slides-cache)" ]; then
-            cp -r slides-cache/. _site/
-          else
-            echo '<meta http-equiv="refresh" content="0;url=/excel-ai-workshop/bm-viewer/">' > _site/index.html
+          if [ ! -d slides-cache ] || [ -z "$(ls -A slides-cache 2>/dev/null)" ]; then
+            echo "ERROR: slides cache is empty. Run deploy-slides workflow first, then re-run this workflow." >&2
+            exit 1
           fi
+          mkdir -p _site/bm-viewer
+          cp -r slides-cache/. _site/
           cp app/bm_report_viewer/dist/index.html _site/bm-viewer/
 
       - name: Upload Pages artifact
