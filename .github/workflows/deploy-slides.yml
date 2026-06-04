@@ -34,10 +34,13 @@ jobs:
       - name: Enable pnpm
         run: corepack enable
 
-      - name: Download theme package
-        run: gh release download theme-assets --pattern "slidev-theme-viewsonic-proav-*.tgz"
+      - name: Install cryptography
+        run: pip install cryptography --quiet
+
+      - name: Decrypt theme package
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          THEME_FERNET_KEY: ${{ secrets.THEME_FERNET_KEY }}
+        run: python crypt_theme.py --decrypt
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
