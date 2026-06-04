@@ -16,6 +16,7 @@ permissions:
   contents: read
   pages: write
   id-token: write
+  actions: read
 
 concurrency:
   group: pages
@@ -49,25 +50,35 @@ jobs:
       - name: Build slides
         run: pnpm slidev build --base /excel-ai-workshop/
 
-      - name: Save slides cache
-        uses: actions/cache/save@v4
+      - name: Upload slides artifact
+        uses: actions/upload-artifact@v4
         with:
+          name: slides-dist
           path: dist/
-          key: slides-dist-${{ hashFiles('slides.md', 'components/**', 'pages/**', 'snippets/**', 'pnpm-lock.yaml') }}
+          retention-days: 30
+          overwrite: true
 
-      - name: Restore bm-viewer cache
-        uses: actions/cache/restore@v4
-        with:
-          path: bm-viewer-cache/
-          key: bm-viewer-dist-placeholder
-          restore-keys: bm-viewer-dist-
+      - name: Download bm-viewer artifact
+        id: bm-viewer-artifact
+        run: |
+          ARTIFACT_ID=$(gh api /repos/${{ github.repository }}/actions/artifacts \
+            --jq '[.artifacts[] | select(.name=="bm-viewer-dist" and .expired==false)] | sort_by(.created_at) | last | .id // empty')
+          if [ -n "$ARTIFACT_ID" ]; then
+            gh api /repos/${{ github.repository }}/actions/artifacts/$ARTIFACT_ID/zip > bm-viewer.zip
+            mkdir -p bm-viewer-dist && unzip -q bm-viewer.zip -d bm-viewer-dist/
+            echo "found=true" >> $GITHUB_OUTPUT
+          else
+            echo "found=false" >> $GITHUB_OUTPUT
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Assemble site
         run: |
           mkdir -p _site/bm-viewer
           cp -r dist/. _site/
-          if [ -f bm-viewer-cache/index.html ]; then
-            cp bm-viewer-cache/index.html _site/bm-viewer/
+          if [ "${{ steps.bm-viewer-artifact.outputs.found }}" = "true" ]; then
+            cp bm-viewer-dist/index.html _site/bm-viewer/
           else
             echo '<meta http-equiv="refresh" content="0;url=/excel-ai-workshop/">' > _site/bm-viewer/index.html
           fi

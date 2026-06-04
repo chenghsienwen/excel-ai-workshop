@@ -11,6 +11,7 @@ permissions:
   contents: read
   pages: write
   id-token: write
+  actions: read
 
 concurrency:
   group: pages
@@ -33,27 +34,31 @@ jobs:
       - name: Build static site
         run: python app/bm_report_viewer/build.py
 
-      - name: Save bm-viewer cache
-        uses: actions/cache/save@v4
+      - name: Upload bm-viewer artifact
+        uses: actions/upload-artifact@v4
         with:
+          name: bm-viewer-dist
           path: app/bm_report_viewer/dist/
-          key: bm-viewer-dist-${{ hashFiles('app/bm_report_viewer/**') }}
+          retention-days: 30
+          overwrite: true
 
-      - name: Restore slides cache
-        uses: actions/cache/restore@v4
-        with:
-          path: slides-cache/
-          key: slides-dist-placeholder
-          restore-keys: slides-dist-
+      - name: Download slides artifact
+        run: |
+          ARTIFACT_ID=$(gh api /repos/${{ github.repository }}/actions/artifacts \
+            --jq '[.artifacts[] | select(.name=="slides-dist" and .expired==false)] | sort_by(.created_at) | last | .id // empty')
+          if [ -z "$ARTIFACT_ID" ]; then
+            echo "ERROR: No slides-dist artifact found. Run deploy-slides workflow first, then re-run this workflow." >&2
+            exit 1
+          fi
+          gh api /repos/${{ github.repository }}/actions/artifacts/$ARTIFACT_ID/zip > slides.zip
+          mkdir -p slides-dist && unzip -q slides.zip -d slides-dist/
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Assemble site
         run: |
-          if [ ! -d slides-cache ] || [ -z "$(ls -A slides-cache 2>/dev/null)" ]; then
-            echo "ERROR: slides cache is empty. Run deploy-slides workflow first, then re-run this workflow." >&2
-            exit 1
-          fi
           mkdir -p _site/bm-viewer
-          cp -r slides-cache/. _site/
+          cp -r slides-dist/. _site/
           cp app/bm_report_viewer/dist/index.html _site/bm-viewer/
 
       - name: Upload Pages artifact
