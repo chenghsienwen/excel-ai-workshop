@@ -160,106 +160,105 @@ requirements: ["plotly", "pandas"]
 
 ## Updating the Live Site
 
-To update data:
-1. Run `bm_analytics` pipeline → new CSVs land in `input/`
-2. `git add input/ && git commit && git push`  (after removing `input/` from .gitignore, OR)
-3. Push triggers the workflow → `build.py` re-embeds the latest CSVs → redeploy
+To update data, re-encrypt and push:
 
-Alternatively, keep `input/` gitignored and trigger a **manual workflow dispatch**
-after copying fresh CSVs to the runner — but that requires the workflow to source
-data from somewhere (e.g., a GitHub release asset or LFS). The simpler path is to
-commit the CSVs for the published version (they are small).
+```bash
+cd app/bm_report_viewer
+python sync_input.py                         # pull latest CSVs from bm_analytics
+FERNET_KEY="<your-key>" python crypt_data.py --encrypt
+cd ../..
+git add app/bm_report_viewer/input_enc/
+git commit -m "data: refresh CSVs YYYY-MM-DD"
+git push origin main                         # triggers redeploy automatically
+```
 
 ---
 
-## Data Protection: `data` Branch + Base64 Obfuscation
+## Data Protection: Fernet Encryption + Base64 Obfuscation
 
 ### Problem
 
-Two concerns with the original design:
+Two concerns with serving data from a public repo:
 
 | Concern | Root cause |
 |---|---|
 | CI build fails | `input/` is gitignored → `actions/checkout` gives CI an empty directory → `build.py` aborts |
-| Raw CSV readable in page source | CSV rows embedded as plain JSON strings in `index.html` → anyone can View Source and copy the data |
+| Raw CSV readable | Anyone can browse the repo or View Source to extract the data |
 
-GitHub Actions Secrets cannot be used here because the total CSV size is ~1.8 MB,
-well above the 64 KB per-secret limit.
+A `data` branch was considered but **does not work for public repos** — any branch
+is publicly readable, so the raw CSVs would still be accessible.
+
+GitHub Actions Secrets cannot store the files directly either: the total CSV size
+is ~1.8 MB, well above the 64 KB per-secret limit.
 
 ---
 
-### Solution 1 — `data` Orphan Branch (CI access to CSVs)
+### Solution — Fernet Encryption + Secret Key
 
-An **orphan branch** named `data` holds only the CSV files. It has no shared
-history with `main` and never appears in the main commit log.
+CSVs are encrypted with **Fernet** (AES-128-CBC + HMAC) before being committed.
+The decryption key is stored only as a GitHub Actions secret and never touches the repo.
 
 ```
-main branch   →  source code only  (no input/ data)
-data branch   →  app/bm_report_viewer/input/*.csv only
+main branch
+├── input_enc/*.enc    ← encrypted blobs (committed, publicly visible but unreadable)
+├── input/             ← gitignored; populated by CI at build time via decryption
+└── ...
 ```
 
-**One-time setup:**
+**Key generation (one-time, run locally):**
 
 ```bash
-git checkout --orphan data
-git rm -rf .
-mkdir -p app/bm_report_viewer/input
-cp /path/to/output/*.csv app/bm_report_viewer/input/
-git add app/bm_report_viewer/input/
-git commit -m "data: initial CSV files"
-git push origin data
-git checkout main
+python app/bm_report_viewer/crypt_data.py --keygen
+# prints a key — copy it immediately, store in a password manager
+# never paste it into any file, commit, or chat message
+```
+
+Add the key to GitHub: repo → **Settings → Secrets and variables → Actions →
+New repository secret** → name: `FERNET_KEY`, value: `<key from above>`.
+
+**One-time local setup:**
+
+```bash
+cd app/bm_report_viewer
+python sync_input.py                          # populate input/ from bm_analytics
+FERNET_KEY="<your-key>" python crypt_data.py --encrypt
+cd ../..
+git add app/bm_report_viewer/input_enc/
+git commit -m "feat: add encrypted CSV data for deploy"
+git push origin main
 ```
 
 **How the workflow uses it:**
 
 ```yaml
-- name: Checkout main (source)
-  uses: actions/checkout@v4
-  with:
-    ref: main
+- name: Install cryptography
+  run: pip install cryptography --quiet
 
-- name: Fetch CSV data from data branch
-  run: |
-    git fetch origin data
-    git checkout origin/data -- app/bm_report_viewer/input/
+- name: Decrypt CSV data
+  env:
+    FERNET_KEY: ${{ secrets.FERNET_KEY }}    # key injected by GitHub, never logged
+  run: python app/bm_report_viewer/crypt_data.py --decrypt
+
+- name: Build static site
+  run: python app/bm_report_viewer/build.py
 ```
 
-The runner starts with `main` checked out, then overlays only the `input/` directory
-from the `data` branch. `build.py` then runs with all files present.
-
-**Updating data (no code change needed):**
-
-```bash
-git checkout data
-cp /new/output/*.csv app/bm_report_viewer/input/
-git add app/bm_report_viewer/input/
-git commit -m "data: refresh CSVs YYYY-MM-DD"
-git push origin data    # triggers workflow → redeploy automatically
-git checkout main
-```
-
-**Trigger matrix:**
-
-| Push to | Effect |
-|---|---|
-| `main` | Rebuilds with latest code + current `data` branch CSVs |
-| `data` | Rebuilds with current `main` code + new CSVs |
-| Manual dispatch | Force rebuild on demand |
+CI decrypts `input_enc/*.enc` → `input/*.csv` → `build.py` embeds them → deploy.
 
 ---
 
-### Solution 2 — Base64 Obfuscation in HTML
+### Base64 Obfuscation in HTML
 
-`build.py` separates CSV data from Python source in the generated HTML:
+`build.py` also base64-encodes the CSV content before embedding in `index.html`,
+so even a viewer of the built page source sees opaque blobs rather than raw rows:
 
 ```
 index.html
 ├── pyFiles  (JSON)   — Python source, plain text
-└── dataB64  (JSON)   — CSV content, base64-encoded
+└── dataB64  (JSON)   — CSV content, base64-encoded strings
 ```
 
-The JS layer decodes `dataB64` into the stlite virtual filesystem before mount:
+The JS layer decodes `dataB64` into the virtual filesystem before mounting:
 
 ```javascript
 const dataFiles = Object.fromEntries(
@@ -268,29 +267,32 @@ const dataFiles = Object.fromEntries(
     new TextDecoder().decode(Uint8Array.from(atob(b64), c => c.charCodeAt(0)))
   ])
 );
-
 stlite.mount({ ..., files: { ...pyFiles, ...dataFiles } }, element);
 ```
 
-**Effect:** raw CSV rows (`region,product,year,...`) never appear as plain text
-anywhere in the HTML source. A viewer sees only base64 blobs like:
+Encoded sizes (base64 is ~33% larger than source):
 
-```
-"input/layer1_report.csv": "cmVnaW9uLHByb2R1Y3QseWVhci..."
-```
-
-Encoded sizes (base64 is ~33% larger than binary):
-
-| File | Raw | Base64 |
+| File | Raw | Base64 in HTML |
 |---|---|---|
 | `raw_report.csv` | 575 KB | 784 KB |
 | `layer3_timeseries.csv` | 884 KB | 1,207 KB |
 | others | ~300 KB total | ~420 KB total |
 | **Total HTML** | — | **~2.4 MB** |
 
-> Note: this is obfuscation, not encryption. A determined viewer can still decode
-> the base64 in browser DevTools. For stronger protection, host the app on a
-> server with authentication instead of a public static site.
+> Note: base64 in the HTML is obfuscation only — a determined viewer can decode it
+> with browser DevTools. The real protection is Fernet encryption on the repo side.
+> For access-controlled viewing, host on a server with authentication instead.
+
+---
+
+### Protection Layers Summary
+
+| Layer | What it stops |
+|---|---|
+| Fernet-encrypted `.enc` files in repo | Direct CSV download from GitHub |
+| Key stored only as Actions secret | Key never in git history or logs |
+| `input/` gitignored | Accidental commit of raw CSVs |
+| Base64 in HTML | Casual View Source inspection |
 
 ---
 

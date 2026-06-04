@@ -2,7 +2,7 @@ name: Deploy BM Report Viewer to GitHub Pages
 
 on:
   push:
-    branches: [main, data]
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -18,15 +18,15 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout main (source)
-        uses: actions/checkout@v4
-        with:
-          ref: main
+      - uses: actions/checkout@v4
 
-      - name: Fetch CSV data from data branch
-        run: |
-          git fetch origin data
-          git checkout origin/data -- app/bm_report_viewer/input/
+      - name: Install cryptography
+        run: pip install cryptography --quiet
+
+      - name: Decrypt CSV data
+        env:
+          FERNET_KEY: ${{ secrets.FERNET_KEY }}
+        run: python app/bm_report_viewer/crypt_data.py --decrypt
 
       - name: Build static site
         run: python app/bm_report_viewer/build.py
