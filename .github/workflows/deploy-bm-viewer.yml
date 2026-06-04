@@ -2,10 +2,7 @@ name: Deploy BM Report Viewer to GitHub Pages
 
 on:
   push:
-    branches: [main]
-    paths:
-      - "app/bm_report_viewer/**"
-      - ".github/workflows/deploy-bm-viewer.yml"
+    branches: [main, data]
   workflow_dispatch:
 
 permissions:
@@ -21,7 +18,15 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout main (source)
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Fetch CSV data from data branch
+        run: |
+          git fetch origin data
+          git checkout origin/data -- app/bm_report_viewer/input/
 
       - name: Build static site
         run: python app/bm_report_viewer/build.py

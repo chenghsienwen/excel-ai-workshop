@@ -172,6 +172,128 @@ commit the CSVs for the published version (they are small).
 
 ---
 
+## Data Protection: `data` Branch + Base64 Obfuscation
+
+### Problem
+
+Two concerns with the original design:
+
+| Concern | Root cause |
+|---|---|
+| CI build fails | `input/` is gitignored → `actions/checkout` gives CI an empty directory → `build.py` aborts |
+| Raw CSV readable in page source | CSV rows embedded as plain JSON strings in `index.html` → anyone can View Source and copy the data |
+
+GitHub Actions Secrets cannot be used here because the total CSV size is ~1.8 MB,
+well above the 64 KB per-secret limit.
+
+---
+
+### Solution 1 — `data` Orphan Branch (CI access to CSVs)
+
+An **orphan branch** named `data` holds only the CSV files. It has no shared
+history with `main` and never appears in the main commit log.
+
+```
+main branch   →  source code only  (no input/ data)
+data branch   →  app/bm_report_viewer/input/*.csv only
+```
+
+**One-time setup:**
+
+```bash
+git checkout --orphan data
+git rm -rf .
+mkdir -p app/bm_report_viewer/input
+cp /path/to/output/*.csv app/bm_report_viewer/input/
+git add app/bm_report_viewer/input/
+git commit -m "data: initial CSV files"
+git push origin data
+git checkout main
+```
+
+**How the workflow uses it:**
+
+```yaml
+- name: Checkout main (source)
+  uses: actions/checkout@v4
+  with:
+    ref: main
+
+- name: Fetch CSV data from data branch
+  run: |
+    git fetch origin data
+    git checkout origin/data -- app/bm_report_viewer/input/
+```
+
+The runner starts with `main` checked out, then overlays only the `input/` directory
+from the `data` branch. `build.py` then runs with all files present.
+
+**Updating data (no code change needed):**
+
+```bash
+git checkout data
+cp /new/output/*.csv app/bm_report_viewer/input/
+git add app/bm_report_viewer/input/
+git commit -m "data: refresh CSVs YYYY-MM-DD"
+git push origin data    # triggers workflow → redeploy automatically
+git checkout main
+```
+
+**Trigger matrix:**
+
+| Push to | Effect |
+|---|---|
+| `main` | Rebuilds with latest code + current `data` branch CSVs |
+| `data` | Rebuilds with current `main` code + new CSVs |
+| Manual dispatch | Force rebuild on demand |
+
+---
+
+### Solution 2 — Base64 Obfuscation in HTML
+
+`build.py` separates CSV data from Python source in the generated HTML:
+
+```
+index.html
+├── pyFiles  (JSON)   — Python source, plain text
+└── dataB64  (JSON)   — CSV content, base64-encoded
+```
+
+The JS layer decodes `dataB64` into the stlite virtual filesystem before mount:
+
+```javascript
+const dataFiles = Object.fromEntries(
+  Object.entries(dataB64).map(([path, b64]) => [
+    path,
+    new TextDecoder().decode(Uint8Array.from(atob(b64), c => c.charCodeAt(0)))
+  ])
+);
+
+stlite.mount({ ..., files: { ...pyFiles, ...dataFiles } }, element);
+```
+
+**Effect:** raw CSV rows (`region,product,year,...`) never appear as plain text
+anywhere in the HTML source. A viewer sees only base64 blobs like:
+
+```
+"input/layer1_report.csv": "cmVnaW9uLHByb2R1Y3QseWVhci..."
+```
+
+Encoded sizes (base64 is ~33% larger than binary):
+
+| File | Raw | Base64 |
+|---|---|---|
+| `raw_report.csv` | 575 KB | 784 KB |
+| `layer3_timeseries.csv` | 884 KB | 1,207 KB |
+| others | ~300 KB total | ~420 KB total |
+| **Total HTML** | — | **~2.4 MB** |
+
+> Note: this is obfuscation, not encryption. A determined viewer can still decode
+> the base64 in browser DevTools. For stronger protection, host the app on a
+> server with authentication instead of a public static site.
+
+---
+
 ## Known Limitations
 
 | Limitation | Detail |

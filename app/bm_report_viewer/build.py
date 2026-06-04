@@ -2,12 +2,16 @@
 """
 Build a self-contained stlite (Streamlit-in-browser) static site.
 
+CSV data is base64-encoded in the JS layer and decoded into the stlite virtual
+filesystem before mount — raw rows are not visible as plain text in page source.
+
 Usage:
     python build.py            # outputs dist/index.html
-    python build.py --open     # also opens the result in a browser
+    python build.py --open     # generates + opens in browser
 """
 
 import argparse
+import base64
 import json
 import webbrowser
 from pathlib import Path
@@ -45,14 +49,22 @@ DATA_FILES = [
 def build():
     missing = [f for f in PY_FILES + DATA_FILES if not (APP_DIR / f).exists()]
     if missing:
-        raise FileNotFoundError(f"Missing files:\n" + "\n".join(f"  {f}" for f in missing))
+        raise FileNotFoundError("Missing files:\n" + "\n".join(f"  {f}" for f in missing))
 
-    files = {
+    py_files = {
         path: (APP_DIR / path).read_text(encoding="utf-8")
-        for path in PY_FILES + DATA_FILES
+        for path in PY_FILES
     }
 
-    files_json = json.dumps(files, ensure_ascii=False, indent=2)
+    # CSV content stored as base64 — decoded in JS before stlite mounts,
+    # so raw rows don't appear as plain text anywhere in page source.
+    data_b64 = {
+        path: base64.b64encode((APP_DIR / path).read_bytes()).decode("ascii")
+        for path in DATA_FILES
+    }
+
+    py_files_json = json.dumps(py_files, ensure_ascii=False, indent=2)
+    data_b64_json = json.dumps(data_b64, ensure_ascii=False)
 
     html = f"""<!DOCTYPE html>
 <html lang="en">
@@ -69,11 +81,22 @@ def build():
   <div id="root"></div>
   <script src="https://cdn.jsdelivr.net/npm/@stlite/browser@{STLITE_VERSION}/build/stlite.js"></script>
   <script>
+    const pyFiles = {py_files_json};
+
+    // Decode CSV data from base64 and merge into the files map.
+    const dataB64 = {data_b64_json};
+    const dataFiles = Object.fromEntries(
+      Object.entries(dataB64).map(([path, b64]) => [
+        path,
+        new TextDecoder().decode(Uint8Array.from(atob(b64), c => c.charCodeAt(0)))
+      ])
+    );
+
     stlite.mount(
       {{
         requirements: ["plotly", "pandas"],
         entrypoint: "app.py",
-        files: {files_json}
+        files: {{ ...pyFiles, ...dataFiles }}
       }},
       document.getElementById("root")
     );
