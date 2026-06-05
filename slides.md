@@ -36,6 +36,64 @@ cards:
 
 ---
 
+# Prompt: how to do excel automation?
+
+<ChatWindow class="text-left mt-6">
+  <template #question>
+    I want to do excel automation on my sales report that lets <code>X cell</code> in <b>Excel 1</b> file react to <code>Y cell</code> in <b>Excel 2</b> file.
+  </template>
+  
+  <template #response>
+    You can achieve this seamlessly using Python with the <code>openpyxl</code> library, or by writing a quick <b>VBA Macro</b> using the <code>Worksheet_Change</code> event to trigger the cross-file update automatically whenever Cell X gets modified.
+  </template>
+
+  <template #question2>
+    How to add a quick <b>VBA Macro</b> for that — letting <code>X cell</code> in <b>Excel 1</b> react to <code>Y cell</code> in <b>Excel 2</b>?
+  </template>
+
+  <template #response2>
+    Open <b>Excel 1</b>, press <code>Alt+F11</code> to open the VBA editor, then paste this into the <code>Worksheet_Change</code> event of the sheet containing Cell X:<br><br>
+    <code>Private Sub Worksheet_Change(ByVal Target As Range)</code><br>
+    <code>&nbsp;&nbsp;If Not Intersect(Target, Me.Range("X1")) Is Nothing Then</code><br>
+    <code>&nbsp;&nbsp;&nbsp;&nbsp;Workbooks("Excel2.xlsx").Sheets(1).Range("Y1").Value = Me.Range("X1").Value</code><br>
+    <code>&nbsp;&nbsp;End If</code><br>
+    <code>End Sub</code><br><br>
+    Both files must be open for the macro to fire. Save <b>Excel 1</b> as <code>.xlsm</code> to preserve the macro.
+  </template>
+
+  <template #question3>
+    How about just uploading the Excel files and assigning the rule — lets <code>X cell</code> in <b>Excel 1</b> react to <code>Y cell</code> in <b>Excel 2</b> — then let AI do the job?
+  </template>
+
+  <template #response3>
+    Upload both files to an AI like <b>ChatGPT</b> or <b>Claude</b> with file-upload enabled, then describe the rule: <code>"copy X1 from Excel1 to Y1 in Excel2 whenever X1 changes"</code>. The AI reads both file structures and generates a ready-to-run <b>Python script</b> or <b>VBA Macro</b> — you paste and run it locally. Your data never leaves your machine; only the file schema and your prompt are sent to the AI.
+  </template>
+</ChatWindow>
+
+---
+
+# Prompt: use Microsoft copilot
+
+<ChatWindow class="text-left mt-6">
+  <template #question>
+    How to collect multiple excels to make a pivot table by Microsoft Copilot?
+  </template>
+  
+  <template #response>
+    Open your Excel files in <b>Microsoft 365</b>, then prompt Copilot: <code>Consolidate data from these files into one table</code>. Once merged, ask Copilot <code>Create a pivot table that summarizes [column] by [category]</code> — it will build the pivot, configure the fields, and apply grouping automatically without any manual formula or macro work.
+  </template>
+
+  <template #question2>
+    Is it free to use Copilot?
+  </template>
+
+  <template #response2>
+    The basic <b>Microsoft Copilot</b> (web &amp; Windows 11) is free, but <b>Copilot for Microsoft 365</b> — the version embedded directly inside Excel, Word, and Teams — requires a paid add-on of around <code>$30 USD/user/month</code> on top of an existing Microsoft 365 Business or Enterprise subscription.
+  </template>
+</ChatWindow>
+
+---
+
 # Goal
 
 Turn Excel inputs  
