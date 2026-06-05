@@ -25,9 +25,14 @@ duration: 35min
 # Excel + AI Workshop
 
 ---
+layout: cards
+cards:
+  - title: Simon Wen
+    text: I am a Cloud Application & Resiliency Engineer who leverages advanced AI acceleration to build, scale, and maintain high-performance business applications at 10x traditional speed, ensuring absolute system elasticity and zero-downtime maintenance.
+  - image: /images/simon.wen.github.jpeg
+---
 
-# From Spreadsheets  
-# to AI Automation
+# Who am I
 
 ---
 
