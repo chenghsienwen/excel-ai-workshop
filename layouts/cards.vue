@@ -3,6 +3,18 @@ import { computed, useId } from 'vue'
 import { useSlideContext } from '@slidev/client'
 import { bgStyle } from 'slidev-theme-viewsonic-proav/composables/background'
 import { themeImage } from 'slidev-theme-viewsonic-proav/composables/assets'
+
+// themeImage returns user paths unchanged (e.g. "/images/foo.jpg"), which
+// breaks when the site is served under a sub-path (GitHub Pages base URL).
+// Prepend BASE_URL for absolute user paths so the URL becomes correct in
+// both dev (base = "/") and production (base = "/excel-ai-workshop/").
+function resolveImage(ref?: string): string | undefined {
+  const src = themeImage(ref)
+  if (!src) return undefined
+  if (src.startsWith('/') && !src.startsWith('//'))
+    return import.meta.env.BASE_URL.replace(/\/$/, '') + src
+  return src
+}
 import ConfidentialMark from 'slidev-theme-viewsonic-proav/components/ConfidentialMark.vue'
 import PageNumber from 'slidev-theme-viewsonic-proav/components/PageNumber.vue'
 import gridBg from 'slidev-theme-viewsonic-proav/assets/content-grid-bg.png'
@@ -57,7 +69,7 @@ const bodyClipId = `vs-card-body-clip-${uid}`
         <img
           v-if="card.image"
           class="vs-card__img"
-          :src="themeImage(card.image)"
+          :src="resolveImage(card.image)"
           :alt="card.title || ''"
           :style="{ clipPath: `url(#${imgClipId})` }"
         >

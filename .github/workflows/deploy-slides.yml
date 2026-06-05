@@ -6,7 +6,9 @@ on:
     paths:
       - slides.md
       - components/**
+      - layouts/**
       - pages/**
+      - public/**
       - snippets/**
       - package.json
       - pnpm-lock.yaml
