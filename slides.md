@@ -175,29 +175,52 @@ cards:
 
 # Workshop Flow
 
-1. Define Excel structure  
-2. Describe transformation  
-3. Generate Python code via AI  
-4. Run script locally  
-5. Validate output
+<div style="zoom: 2.5; margin-top: 5rem">
+
+```mermaid
+flowchart LR
+    A[Define\nExcel Structure] --> B[Describe\nTransformation]
+    B --> C[Generate Python\nCode via AI]
+    C --> D[Run Script\nLocally]
+    D --> E[Validate\nOutput]
+```
+
+</div>
+
+---
+layout: chapter
+---
+
+# Let's prompt
+
 
 ---
 
-# Failure Cases
+# Make a plan for normalize data
 
-- Inconsistent Excel schemas
-- Missing keys / IDs
-- Poor column naming
-- Unstructured inputs
+<ChatWindow class="text-left mt-6">
+  <template #question>
+    Transform raw Excel business-status files (<code>raw_data/</code>) into a consolidated, analytics-ready CSV (<code>output/</code>) using Python with Google-style conventions.
+  </template>
+
+  <template #response>
+    Use <b>pandas</b> + <b>openpyxl</b> in a four-module pipeline: <code>loader.py</code> reads each <code>.xlsx</code> and infers <code>product</code> / <code>year</code> from the filename stem, <code>transformer.py</code> melts the 12 month columns into long-format rows via <code>pd.melt</code> and validates dimension values, then <code>writer.py</code> writes the merged result to <code>output/raw_report.csv</code>. <code>main.py</code> orchestrates the full flow with <code>argparse</code>: glob all files → load → transform → <code>pd.concat</code> → sort → write. The output schema is exactly 7 columns — <code>product, year, region, rev_op_type, sales_budget_type, month, amount</code> — with Google-style docstrings, type hints, and <code>logging</code> throughout.
+  </template>
+</ChatWindow>
+
+---
+
+# Bm report plan
+
+<TextLoader path="/app/bm_report/docs/plan.md" />
 
 ---
 
 # Best Practices
 
-- Standardize Excel format
-- Use table headers
-- Define unique IDs
-- Keep transformations explicit
+- [Prompt] Discussion and make plan first
+- [Context] Provide Excel format and samples
+- [Harness] Break down tasks and let AI implement => review step by step
 
 ---
 
