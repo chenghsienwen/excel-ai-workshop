@@ -106,7 +106,7 @@ const bodyClipId = `vs-card-body-clip-${uid}`
   z-index: 2;
 }
 .vs-cards__head :deep(h1) {
-  font-size: 1.7rem;
+  font-size: 3rem;
   line-height: 1.2;
   margin: 0 0 0.5rem;
 }
