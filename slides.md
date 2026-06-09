@@ -119,28 +119,17 @@ cards:
 
 ---
 
-# Architecture
-
-Excel Files  
-↓  
-AI Agent  
-↓  
-Python Code  
-↓  
-Local Execution  
-↓  
-Output Excel
-
----
-
 # Input
 
-Multiple Excel files
-
-- Sales reports
-- HR data
-- Finance sheets
-- Logs / exports
+<FileTree
+  path="app/bm_report/raw_data"
+  :files="[
+    'CDE biz status_2024_v1.xlsx',
+    'CDE biz status_2025_v1.xlsx',
+    'PJ biz status_2024_v1.xlsx',
+    'PJ biz status_2025_v2.xlsx',
+  ]"
+/>
 
 ---
 
