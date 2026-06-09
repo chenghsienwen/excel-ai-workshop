@@ -119,39 +119,33 @@ cards:
 
 ---
 
-# Input
+# Input & Output
 
-<FileTree
-  path="app/bm_report/raw_data"
-  :files="[
-    'CDE biz status_2024_v1.xlsx',
-    'CDE biz status_2025_v1.xlsx',
-    'PJ biz status_2024_v1.xlsx',
-    'PJ biz status_2025_v2.xlsx',
-  ]"
-/>
-
----
-
-# AI Role
-
-AI receives:
-
-- File structure
-- Column definitions
-- Transformation rules
-
----
-
-# AI Output
-
-Python script that:
-
-- Reads Excel files
-- Cleans data
-- Merges datasets
-- Applies logic
-- Generates output Excel
+<TwoCols left-title="Input" right-title="Output">
+  <template #left>
+    <FileTree
+      path="app/bm_report/raw_data"
+      :files="[
+        'CDE biz status_2024_v1.xlsx',
+        'CDE biz status_2025_v1.xlsx',
+        'PJ biz status_2024_v1.xlsx',
+        'PJ biz status_2025_v2.xlsx',
+      ]"
+    />
+  </template>
+  <template #right>
+    <FileTree
+      path="app/bm_report_viewer/input"
+      :files="[
+        'layer1_report.csv',
+        'layer2_report.csv',
+        'layer3_segmentation.csv',
+        'layer3_timeseries.csv',
+        'raw_report.csv',
+      ]"
+    />
+  </template>
+</TwoCols>
 
 ---
 
