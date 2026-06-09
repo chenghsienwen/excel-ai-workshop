@@ -24,7 +24,7 @@ duration: 35min
 
 # Excel + AI Workshop
 
-<CurrentDate />
+<LastModifiedDate />
 
 ---
 layout: cards
