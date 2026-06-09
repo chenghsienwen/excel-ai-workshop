@@ -40,8 +40,9 @@ onMounted(async () => {
     if (url) {
       buf = await (await fetch(url)).arrayBuffer()
     } else {
-      // Fall back to public asset (strip leading /public prefix for runtime URL)
-      const publicUrl = key.replace(/^\/public/, '')
+      // Fall back to public asset; prepend BASE_URL so GitHub Pages subpath works
+      const base = (import.meta.env.BASE_URL ?? '/').replace(/\/$/, '')
+      const publicUrl = base + key.replace(/^\/public/, '')
       const res = await fetch(publicUrl)
       if (!res.ok) { error.value = `File not found: ${key}`; loading.value = false; return }
       buf = await res.arrayBuffer()
