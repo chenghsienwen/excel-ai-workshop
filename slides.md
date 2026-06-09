@@ -216,6 +216,29 @@ layout: chapter
 
 ---
 
+# Make a plan for layered reports
+
+<ChatWindow class="text-left mt-6">
+  <template #question>
+    Read <code>input/raw_report.csv</code> (produced by <code>app/bm_report</code>) and generate Layer 1 and Layer 2 reports:<br>
+    — <b>Layer 1</b> — period aggregations per cohort<br>
+    — <b>Layer 2</b> — derived cross-type metrics (gap, hit rate, YoY, breakeven)<br><br>
+    A third module (<code>trend.py</code>) provides functions for time-series trend views; full spec deferred until layers 1 &amp; 2 are validated. Use Google Python coding style and venv.
+  </template>
+
+  <template #response>
+    Create a three-module pipeline under <code>app/bm_analytics/</code>: <code>layer1.py</code> groups <code>raw_report.csv</code> by cohort (<code>product / year / region</code>) using <code>pd.groupby</code> to produce period aggregations (sum, actual vs budget); <code>layer2.py</code> derives cross-type metrics — budget gap, hit rate (<code>actual / budget</code>), YoY delta, and breakeven threshold — by joining Layer 1 outputs with <code>pd.merge</code>. Wrap both in <code>main.py</code> with <code>argparse</code> flags <code>--layer1</code> / <code>--layer2</code> / <code>--all</code>, each stage writing to <code>output/layer1_report.csv</code> and <code>output/layer2_report.csv</code>. Follow Google-style conventions: 4-space indent, ≤80 chars, type hints, <code>logging</code>, and a <code>.venv</code> activated before running.
+  </template>
+</ChatWindow>
+
+---
+
+# Bm layered reports plan
+
+<TextLoader path="app/bm_analytics/docs/plan.md" />
+
+---
+
 # Best Practices
 
 - [Prompt] Discussion and make plan first
