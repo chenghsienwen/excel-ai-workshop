@@ -24,6 +24,7 @@ interface Card {
   image?: string
   title?: string
   text?: string
+  items?: string[]
 }
 
 const props = defineProps<{
@@ -74,12 +75,15 @@ const bodyClipId = `vs-card-body-clip-${uid}`
           :style="{ clipPath: `url(#${imgClipId})` }"
         >
         <div
-          v-if="card.title || card.text"
+          v-if="card.title || card.text || card.items"
           class="vs-card__body"
           :style="{ clipPath: `url(#${bodyClipId})` }"
         >
           <h3 v-if="card.title" class="vs-card__title">{{ card.title }}</h3>
           <p v-if="card.text" class="vs-card__text">{{ card.text }}</p>
+          <ul v-if="card.items" class="vs-card__items">
+            <li v-for="(item, j) in card.items" :key="j">{{ item }}</li>
+          </ul>
         </div>
       </div>
     </div>
@@ -162,6 +166,11 @@ const bodyClipId = `vs-card-body-clip-${uid}`
   font-weight: 600;
   color: #fff;
   margin: 0 0 0.4rem;
+}
+.vs-card__items {
+  margin: 0;
+  font-size: 0.8rem;
+  line-height: 1.4;
 }
 .vs-card__text {
   font-size: 0.8rem;

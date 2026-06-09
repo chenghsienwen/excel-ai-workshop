@@ -95,31 +95,27 @@ cards:
 </ChatWindow>
 
 ---
+layout: cards
+cards:
+  - title: The Flow
+    items:
+      - Turn Excel inputs
+      - into Python automation
+      - generate Excel outputs
+  - title: Core Idea
+    items:
+      - AI does NOT run your data
+      - AI writes the code
+      - You run it locally
+  - title: Why This Approach?
+    items:
+      - No data leakage
+      - Works with confidential files
+      - Full local control
+      - Reproducible pipelines
+---
 
 # Goal
-
-Turn Excel inputs  
-→ into Python automation  
-→ generate Excel outputs
-
----
-
-# Core Idea
-
-AI does NOT run your data
-
-AI writes the code
-
-You run it locally
-
----
-
-# Why This Approach?
-
-- No data leakage
-- Works with confidential files
-- Full local control
-- Reproducible pipelines
 
 ---
 
