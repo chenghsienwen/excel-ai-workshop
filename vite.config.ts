@@ -9,4 +9,5 @@ export default defineConfig({
   define: {
     __GIT_DATE__: JSON.stringify(gitDate),
   },
+  assetsInclude: ['**/*.xlsx'],
 })

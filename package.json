@@ -12,6 +12,7 @@
     "@slidev/theme-default": "latest",
     "@slidev/theme-seriph": "latest",
     "slidev-theme-viewsonic-proav": "file:./slidev-theme-viewsonic-proav-0.1.0.tgz",
-    "vue": "^3.5.33"
+    "vue": "^3.5.33",
+    "xlsx": "^0.18.5"
   }
 }

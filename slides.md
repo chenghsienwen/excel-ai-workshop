@@ -149,45 +149,27 @@ cards:
 
 ---
 
-# Key Libraries
+# Input sample
 
-pandas  
-openpyxl  
-pathlib  
-numpy (optional)
+<ExcelViewer path="/app/bm_report/raw_data/CDE biz status_2024_v1.xlsx" />
 
 ---
 
-# Example Task
+# Normalize data
 
-“Merge 12 monthly Excel files  
-and generate annual KPI report”
-
----
-
-# What AI Generates
-
-- Data loader
-- Cleaner
-- Transformer
-- Aggregator
-- Exporter
+<ExcelViewer path="/data/raw_report_sample.csv" :default-zoom="1.3" />
 
 ---
 
-# Execution Model
+# Layer1 report
 
-NO cloud execution
-
-ONLY local machine
+<ExcelViewer path="/data/layer1_report_sample.csv" :default-zoom="1.3" />
 
 ---
 
-# Security Advantage
+# Layer2 report
 
-- Data never leaves PC
-- No SaaS upload required
-- Suitable for confidential data
+<ExcelViewer path="/data/layer2_report_sample.csv" :default-zoom="1.3" />
 
 ---
 
