@@ -151,6 +151,29 @@ const bodyClipId = `vs-card-body-clip-${uid}`
   grid-template-rows: 1fr 1fr;
   min-height: calc(27rem / var(--rows, 1));
   max-height: calc(29rem / var(--rows, 1));
+  border-radius: 6px;
+  transition: box-shadow 0.2s, transform 0.2s;
+  cursor: default;
+}
+.vs-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: transparent;
+  z-index: 10;
+  pointer-events: none;
+  transition: background 0.2s;
+}
+.vs-card:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  transform: translateY(-2px);
+}
+.vs-card:hover::before {
+  background: rgba(255, 153, 102, 0.18);
+}
+.vs-card:hover .vs-card__body {
+  background: #5a3520;
 }
 .vs-card--image-only {
   grid-template-rows: 1fr;
