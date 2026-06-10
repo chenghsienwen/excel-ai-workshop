@@ -30,10 +30,12 @@ interface Card {
 const props = defineProps<{
   background?: string
   cards?: Card[]
+  fill?: boolean
 }>()
 
 const { $frontmatter } = useSlideContext()
 const cards = computed<Card[]>(() => props.cards ?? $frontmatter?.value?.cards ?? [])
+const fill  = computed<boolean>(() => props.fill  ?? $frontmatter?.value?.fill  ?? false)
 const style = computed(() => bgStyle(props.background || gridBg))
 
 const uid = useId()
@@ -60,7 +62,7 @@ const bodyClipId = `vs-card-body-clip-${uid}`
       <slot />
     </div>
 
-    <div class="vs-cards__grid" :style="{ '--n': cards.length || 1 }">
+    <div class="vs-cards__grid" :style="{ '--n': cards.length || 1, '--col-size': fill ? '1fr' : 'minmax(0, 18rem)' }">
       <div
         v-for="(card, i) in cards"
         :key="i"
@@ -126,7 +128,7 @@ const bodyClipId = `vs-card-body-clip-${uid}`
 
 .vs-cards__grid {
   display: grid;
-  grid-template-columns: repeat(var(--n), minmax(0, 18rem));
+  grid-template-columns: repeat(var(--n), var(--col-size, minmax(0, 18rem)));
   gap: 1.6rem;
   align-self: start;
   justify-content: center;

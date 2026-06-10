@@ -27,6 +27,14 @@ duration: 35min
 <LastModifiedDate />
 
 ---
+
+# Table of Contents
+
+<TocContainer>
+  <Toc maxDepth="1" />
+</TocContainer>
+
+---
 layout: cards
 cards:
   - title: Simon Wen
@@ -238,35 +246,69 @@ layout: chapter
 <TextLoader path="app/bm_analytics/docs/plan.md" :default-font-size="1.0" />
 
 ---
+layout: cards
+fill: true
+cards:
+  - title: "Prompt"
+    text: Discussion and make plan first before writing any code
+  - title: "Context"
+    text: Provide Excel format, column names, and sample rows so AI understands your data shape
+  - title: "Harness"
+    text: Break down tasks and let AI implement one step at a time — review each output before moving on
+---
 
 # Best Practices
 
-- \[Prompt\] Discussion and make plan first
-- \[Context\] Provide Excel format and samples
-- \[Harness\] Break down tasks and let AI implement => review step by step
+---
+
+# Advanced Extensions: Make a plan for viewer dashboard
+
+<ChatWindow class="text-left mt-6">
+  <template #question>
+    Create a dashboard (<code>app/bm_report_viewer</code>) that reads analytics outputs from <code>app/bm_analytics</code> and visualises all four report layers interactively. Runs locally on Ubuntu and macOS with no external services. Use Google coding conventions and <code>venv</code> by default.
+  </template>
+
+  <template #response>
+    Create a <b>Streamlit</b> app under <code>app/bm_report_viewer/</code> backed by a <code>python -m venv .venv</code> virtual environment — activate with <code>source .venv/bin/activate</code> then <code>pip install -r requirements.txt</code>. Load the four CSVs from <code>app/bm_analytics/output/</code> via <code>pd.read_csv</code> and expose them through <code>st.tabs</code>, one tab per report layer. Follow the <b>Google Python Style Guide</b>: module-level docstrings, <code>snake_case</code> names, type hints on all public functions, and <code>logging</code> in place of <code>print</code>. The entire stack runs offline on Ubuntu and macOS with zero external services.
+  </template>
+</ChatWindow>
 
 ---
 
-# Advanced Extensions
+# Bm reports viewer plan
 
-- Power BI integration
-- Scheduled automation
-- Email report generation
-- Dashboard creation
+<TextLoader path="app/bm_report_viewer/docs/plan.md" :default-font-size="1.0" />
 
 ---
 
-# Outcome
 
-You build:
+# Outcome & Demo
 
-An AI-assisted data pipeline  
-powered by Python + Excel
+## You build:
+
+### An AI-assisted data pipeline  
+### powered by Python + Excel
+
+<a href="https://chenghsienwen.github.io/excel-ai-workshop/bm-viewer/" target="_blank" rel="noopener" style="display:inline-block;margin-top:1.5rem;padding:0.6rem 1.4rem;background:#f96;color:#000;font-weight:600;font-size:1rem;border-radius:6px;text-decoration:none;letter-spacing:0.02em;">View BM Report Viewer →</a>
 
 ---
 
-# End
+# Q & A
 
-From manual Excel work  
-to automated intelligence
+<QuestionForm class="mt-4" />
+
+---
+
+# Slide take away
+
+<div style="display:flex;align-items:center;justify-content:space-between;height:70%;gap:2rem">
+  <div style="flex:1">
+
+Scan to revisit the slides:
+
+  </div>
+  <div style="flex-shrink:0">
+    <QrCode url="https://chenghsienwen.github.io/excel-ai-workshop" :size="420" dark="rgb(44, 41, 39)" />
+  </div>
+</div>
 
