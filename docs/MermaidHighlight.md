@@ -51,9 +51,21 @@ Custom highlight color:
 <MermaidHighlight :diagram="flow" color="#4af" />
 ```
 
+## How click registration works
+
+Slidev determines a slide's total click count by scanning `v-click` directives at compile time. Because `MermaidHighlight` uses no `v-click` directives, it must register its steps programmatically at runtime:
+
+1. On mount the component injects `$$slidev-clicks-context` — Slidev's per-slide `Ref<ClicksContext>`.
+2. It calls `ctx.register(key, { delta: N, max: N })` where N is the number of parsed nodes.
+3. This sets `clicksTotal = N`, so Slidev keeps the slide active for N presses before advancing.
+4. On unmount it calls `ctx.unregister(key)` to clean up.
+
+The `codeLz` computed reads `ctx.current` directly. Because `ctx.current` is a getter that internally reads a reactive `Ref`, Vue tracks it as a dependency and re-renders on every click.
+
+Without step 2, `clicksTotal` stays 0 and ArrowRight skips the slide entirely — no highlight effect fires.
+
 ## Notes
 
 - Works with any Mermaid diagram type (`flowchart`, `graph`, `sequenceDiagram`, etc.) as long as node IDs follow the `ID[shape]` / `ID(shape)` / `ID{shape}` syntax.
 - Node parsing uses a regex on declaration order. Nodes referenced only as edge targets (without a shape bracket) are not picked up — declare all nodes explicitly if you need them in the highlight sequence.
-- Internally uses `lz-string` to compress the diagram and Slidev's built-in `<Mermaid>` component for rendering.
-- Click step registration: the component injects `$$slidev-clicks-context` and calls `ctx.register()` on mount so Slidev knows this slide has N click steps. Without this, `clicksTotal` would be 0 and ArrowRight would skip the slide entirely.
+- Internally uses `lz-string` to compress the diagram string and Slidev's built-in `<Mermaid :code-lz="...">` component for rendering.

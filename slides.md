@@ -212,7 +212,7 @@ layout: chapter
 
 # Bm report plan
 
-<TextLoader path="/app/bm_report/docs/plan.md" />
+<TextLoader path="/app/bm_report/docs/plan.md" :default-font-size="1.0" />
 
 ---
 
@@ -235,15 +235,15 @@ layout: chapter
 
 # Bm layered reports plan
 
-<TextLoader path="app/bm_analytics/docs/plan.md" />
+<TextLoader path="app/bm_analytics/docs/plan.md" :default-font-size="1.0" />
 
 ---
 
 # Best Practices
 
-- [Prompt] Discussion and make plan first
-- [Context] Provide Excel format and samples
-- [Harness] Break down tasks and let AI implement => review step by step
+- \[Prompt\] Discussion and make plan first
+- \[Context\] Provide Excel format and samples
+- \[Harness\] Break down tasks and let AI implement => review step by step
 
 ---
 
