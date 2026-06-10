@@ -30,7 +30,7 @@ duration: 35min
 
 # Table of Contents
 
-<Accordion title="Agenda" :open="true">
+<Accordion title="Pages" :open="true">
   <TocContainer>
     <Toc maxDepth="1" />
   </TocContainer>
@@ -38,6 +38,7 @@ duration: 35min
 
 ---
 layout: cards
+cols: 2
 cards:
   - title: Simon Wen
     text: I am a Cloud Application & Resiliency Engineer who leverages advanced AI acceleration to build, scale, and maintain high-performance business applications at 10x traditional speed, ensuring absolute system elasticity and zero-downtime maintenance.
@@ -250,6 +251,7 @@ layout: chapter
 
 ---
 layout: cards
+cols: 2
 fill: true
 cards:
   - title: "Prompt"
@@ -258,6 +260,8 @@ cards:
     text: Provide Excel format, column names, and sample rows so AI understands your data shape
   - title: "Harness"
     text: Break down tasks and let AI implement one step at a time — review each output before moving on
+  - title: "Verify"
+    text: Always open the output CSV and spot-check values against the source Excel before moving to the next step
 ---
 
 # Best Practices

@@ -32,11 +32,14 @@ const props = defineProps<{
   background?: string
   cards?: Card[]
   fill?: boolean
+  cols?: number
 }>()
 
 const { $frontmatter } = useSlideContext()
 const cards = computed<Card[]>(() => props.cards ?? $frontmatter?.value?.cards ?? [])
 const fill  = computed<boolean>(() => props.fill  ?? $frontmatter?.value?.fill  ?? false)
+const cols  = computed<number>(() => props.cols  ?? $frontmatter?.value?.cols  ?? (cards.value.length || 1))
+const rows  = computed<number>(() => Math.ceil(cards.value.length / cols.value))
 const style = computed(() => bgStyle(props.background || gridBg))
 
 const uid = useId()
@@ -63,12 +66,15 @@ const bodyClipId = `vs-card-body-clip-${uid}`
       <slot />
     </div>
 
-    <div class="vs-cards__grid" :style="{ '--n': cards.length || 1, '--col-size': fill ? '1fr' : 'minmax(0, 18rem)' }">
+    <div class="vs-cards__grid" :style="{ '--cols': cols, '--rows': rows, '--col-size': fill ? '1fr' : 'minmax(0, 18rem)' }">
       <div
         v-for="(card, i) in cards"
         :key="i"
         class="vs-card"
-        :class="{ 'vs-card--image-only': card.image && !card.title && !card.text }"
+        :class="{
+          'vs-card--image-only': card.image && !card.title && !card.text && !card.items,
+          'vs-card--text-only':  !card.image,
+        }"
       >
         <img
           v-if="card.image"
@@ -132,7 +138,7 @@ const bodyClipId = `vs-card-body-clip-${uid}`
 
 .vs-cards__grid {
   display: grid;
-  grid-template-columns: repeat(var(--n), var(--col-size, minmax(0, 18rem)));
+  grid-template-columns: repeat(var(--cols, 1), var(--col-size, minmax(0, 18rem)));
   gap: 1.6rem;
   align-self: start;
   justify-content: center;
@@ -143,10 +149,13 @@ const bodyClipId = `vs-card-body-clip-${uid}`
   position: relative;
   display: grid;
   grid-template-rows: 1fr 1fr;
-  min-height: 27rem;
-  max-height: 29rem;
+  min-height: calc(27rem / var(--rows, 1));
+  max-height: calc(29rem / var(--rows, 1));
 }
 .vs-card--image-only {
+  grid-template-rows: 1fr;
+}
+.vs-card--text-only {
   grid-template-rows: 1fr;
 }
 .vs-card__img {
