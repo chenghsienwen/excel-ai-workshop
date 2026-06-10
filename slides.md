@@ -173,18 +173,18 @@ cards:
 
 ---
 
+<script setup>
+const flow = `flowchart LR
+    A[Define\\nExcel Structure] --> B[Describe\\nTransformation]
+    B --> C[Generate Python\\nCode via AI]
+    C --> D[Run Script\\nLocally]
+    D --> E[Validate\\nOutput]`
+</script>
+
 # Workshop Flow
 
 <div style="zoom: 2.5; margin-top: 5rem">
-
-```mermaid
-flowchart LR
-    A[Define\nExcel Structure] --> B[Describe\nTransformation]
-    B --> C[Generate Python\nCode via AI]
-    C --> D[Run Script\nLocally]
-    D --> E[Validate\nOutput]
-```
-
+  <MermaidHighlight :diagram="flow" />
 </div>
 
 ---
