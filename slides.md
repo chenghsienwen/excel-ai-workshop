@@ -30,15 +30,18 @@ duration: 35min
 
 # Table of Contents
 
-<TocContainer>
-  <Toc maxDepth="1" />
-</TocContainer>
+<Accordion title="Agenda" :open="true">
+  <TocContainer>
+    <Toc maxDepth="1" />
+  </TocContainer>
+</Accordion>
 
 ---
 layout: cards
 cards:
   - title: Simon Wen
     text: I am a Cloud Application & Resiliency Engineer who leverages advanced AI acceleration to build, scale, and maintain high-performance business applications at 10x traditional speed, ensuring absolute system elasticity and zero-downtime maintenance.
+    tags: [simon.ch.wen@viewsonic.com]
   - image: /images/simon.wen.github.jpeg
 ---
 

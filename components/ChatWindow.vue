@@ -12,7 +12,10 @@ const turns = computed(() =>
     }))
 )
 
-const rootEl = ref(null)
+const rootEl  = ref(null)
+const zoom    = ref(1)
+const zoomIn  = () => { zoom.value = Math.min(2,   +(zoom.value + 0.1).toFixed(1)) }
+const zoomOut = () => { zoom.value = Math.max(0.5, +(zoom.value - 0.1).toFixed(1)) }
 
 // Sum offsetTop values walking up from el to ancestor (CSS pixels, scale-safe).
 function offsetTopFrom(el, ancestor) {
@@ -59,13 +62,16 @@ onBeforeUnmount(() => ro?.disconnect())
         <span>ChatGPT 4o</span>
         <i class="fa-solid fa-chevron-down text-xs"></i>
       </div>
-      <div class="flex space-x-3 text-[#b4b4b4]">
-        <i class="fa-regular fa-pen-to-square hover:text-white cursor-pointer"></i>
+      <div class="flex items-center space-x-3 text-[#b4b4b4]">
+        <button class="zoom-btn" title="Zoom out" @click="zoomOut">−</button>
+        <span class="zoom-label">{{ Math.round(zoom * 100) }}%</span>
+        <button class="zoom-btn" title="Zoom in" @click="zoomIn">+</button>
+        <i class="fa-regular fa-pen-to-square hover:text-white cursor-pointer ml-1"></i>
       </div>
     </div>
 
     <!-- Message area — grows to fill remaining height, scrolls when content overflows -->
-    <div class="chat-messages p-6 space-y-6 bg-[#171717]">
+    <div class="chat-messages p-6 space-y-6 bg-[#171717]" :style="{ zoom }">
       <template v-for="turn in turns" :key="turn.q">
         <!-- User bubble -->
         <div class="flex items-start flex-row-reverse gap-4">
@@ -124,4 +130,29 @@ onBeforeUnmount(() => ro?.disconnect())
 .chat-messages::-webkit-scrollbar-track  { background: transparent; }
 .chat-messages::-webkit-scrollbar-thumb  { background: #444; border-radius: 2px; }
 .chat-messages::-webkit-scrollbar-thumb:hover { background: #666; }
+
+.zoom-btn {
+  background: none;
+  border: 1px solid #444;
+  border-radius: 4px;
+  color: #b4b4b4;
+  width: 1.3rem;
+  height: 1.3rem;
+  line-height: 1;
+  font-size: 0.95rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: color 0.15s, border-color 0.15s;
+}
+.zoom-btn:hover { color: #fff; border-color: #888; }
+.zoom-label {
+  font-size: 0.7rem;
+  min-width: 2.4rem;
+  text-align: center;
+  color: #888;
+  font-variant-numeric: tabular-nums;
+}
 </style>

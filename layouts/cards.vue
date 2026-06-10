@@ -25,6 +25,7 @@ interface Card {
   title?: string
   text?: string
   items?: string[]
+  tags?: string[]
 }
 
 const props = defineProps<{
@@ -86,6 +87,9 @@ const bodyClipId = `vs-card-body-clip-${uid}`
           <ul v-if="card.items" class="vs-card__items">
             <li v-for="(item, j) in card.items" :key="j">{{ item }}</li>
           </ul>
+          <div v-if="card.tags?.length" class="vs-card__tags">
+            <span v-for="(tag, j) in card.tags" :key="j" class="vs-card__tag">#{{ tag }}</span>
+          </div>
         </div>
       </div>
     </div>
@@ -179,7 +183,23 @@ const bodyClipId = `vs-card-body-clip-${uid}`
   font-weight: 300;
   line-height: 1.5;
   color: #d4d5da;
-  margin: 0;
+  margin: 0 0 0.5rem;
+}
+.vs-card__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin-top: 0.4rem;
+}
+.vs-card__tag {
+  font-size: 0.7rem;
+  font-family: monospace;
+  color: #7dd3fc;
+  background: rgba(125, 211, 252, 0.1);
+  border: 1px solid rgba(125, 211, 252, 0.25);
+  border-radius: 4px;
+  padding: 0.1rem 0.45rem;
+  white-space: nowrap;
 }
 .vs-cards__logo {
   position: absolute;
