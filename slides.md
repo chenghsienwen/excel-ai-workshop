@@ -287,7 +287,23 @@ cards:
 <TextLoader path="app/bm_report_viewer/docs/plan.md" :default-font-size="1.0" />
 
 ---
+layout: cards
+cols: 3
+cards:
+  - title: "Model & Runtime"
+    text: "AI engine powering the session"
+    tags: ["claude-sonnet-4-6", "Claude Code CLI", "linux / bash"]
+  - title: "MCP Servers"
+    text: "No external MCP servers connected"
 
+  - title: "Memory System"
+    text: "Session context persisted across conversations via AI summary files"
+    tags: ["ai-summary.md"]
+---
+
+# System Info
+
+---
 
 # Outcome & Demo
 
