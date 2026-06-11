@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import * as XLSX from 'xlsx'
 
 const props = defineProps<{
@@ -26,10 +26,58 @@ function zoomReset() { zoom.value = 1 }
 
 let workbook: XLSX.WorkBook | null = null
 
+// ── cell tagging ──────────────────────────────────────────────────────────
+// Synchronous — callers must ensure scrollEl is in the DOM before calling.
+function tagCells() {
+  scrollEl.value?.querySelectorAll('tr').forEach((tr, rIdx) => {
+    tr.querySelectorAll('td, th').forEach((td, cIdx) => {
+      ;(td as HTMLElement).dataset.row = String(rIdx)
+      ;(td as HTMLElement).dataset.col = String(cIdx)
+    })
+  })
+}
+
+// ── cell highlight ────────────────────────────────────────────────────────
+const selStart = ref<{ r: number; c: number } | null>(null)
+const selEnd   = ref<{ r: number; c: number } | null>(null)
+const isSelecting = ref(false)
+
+const hasHighlight = computed(() => selStart.value !== null)
+const highlightLabel = computed(() => {
+  if (!selStart.value || !selEnd.value) return ''
+  const rows = Math.abs(selEnd.value.r - selStart.value.r) + 1
+  const cols = Math.abs(selEnd.value.c - selStart.value.c) + 1
+  return `${rows}×${cols}`
+})
+
+function applyHighlight() {
+  if (!selStart.value || !selEnd.value) return
+  const r1 = Math.min(selStart.value.r, selEnd.value.r)
+  const r2 = Math.max(selStart.value.r, selEnd.value.r)
+  const c1 = Math.min(selStart.value.c, selEnd.value.c)
+  const c2 = Math.max(selStart.value.c, selEnd.value.c)
+  scrollEl.value?.querySelectorAll('[data-row]').forEach(cell => {
+    const r = parseInt((cell as HTMLElement).dataset.row ?? '0')
+    const c = parseInt((cell as HTMLElement).dataset.col ?? '0')
+    cell.classList.toggle('ev-cell--highlight', r >= r1 && r <= r2 && c >= c1 && c <= c2)
+  })
+}
+
+function clearHighlight() {
+  scrollEl.value?.querySelectorAll('.ev-cell--highlight').forEach(cell =>
+    cell.classList.remove('ev-cell--highlight')
+  )
+  selStart.value = null
+  selEnd.value   = null
+}
+
 function renderSheet(name: string) {
   if (!workbook) return
+  clearHighlight()
   tableHtml.value = XLSX.utils.sheet_to_html(workbook.Sheets[name])
   activeSheet.value = name
+  // scrollEl already in DOM when switching sheets; wait for v-html to re-render
+  nextTick(tagCells)
 }
 
 onMounted(async () => {
@@ -40,7 +88,6 @@ onMounted(async () => {
     if (url) {
       buf = await (await fetch(url)).arrayBuffer()
     } else {
-      // Fall back to public asset; prepend BASE_URL so GitHub Pages subpath works
       const base = (import.meta.env.BASE_URL ?? '/').replace(/\/$/, '')
       const publicUrl = base + key.replace(/^\/public/, '')
       const res = await fetch(publicUrl)
@@ -57,6 +104,9 @@ onMounted(async () => {
     error.value = String(e)
   } finally {
     loading.value = false
+    // Wait for v-else scrollEl to mount, then tag cells for selection
+    await nextTick()
+    tagCells()
   }
 })
 
@@ -87,25 +137,49 @@ onMounted(() => {
 })
 onBeforeUnmount(() => ro?.disconnect())
 
-// ── drag-to-pan ───────────────────────────────────────────────────────────
+// ── drag-to-pan & cell selection ──────────────────────────────────────────
 const isDragging = ref(false)
 let dragStart = { x: 0, y: 0, sl: 0, st: 0 }
 
 function onMouseDown(e: MouseEvent) {
-  if (!scrollEl.value) return
-  isDragging.value = true
-  dragStart = { x: e.clientX, y: e.clientY, sl: scrollEl.value.scrollLeft, st: scrollEl.value.scrollTop }
-  e.preventDefault()
+  const cell = (e.target as HTMLElement).closest('td, th') as HTMLElement | null
+  if (cell) {
+    isSelecting.value = true
+    isDragging.value  = false
+    const r = parseInt(cell.dataset.row ?? '0')
+    const c = parseInt(cell.dataset.col ?? '0')
+    selStart.value = { r, c }
+    selEnd.value   = { r, c }
+    applyHighlight()
+    e.preventDefault()
+  } else {
+    if (!scrollEl.value) return
+    isDragging.value  = true
+    isSelecting.value = false
+    dragStart = { x: e.clientX, y: e.clientY, sl: scrollEl.value.scrollLeft, st: scrollEl.value.scrollTop }
+    e.preventDefault()
+  }
 }
 
 function onMouseMove(e: MouseEvent) {
-  if (!isDragging.value || !scrollEl.value) return
-  scrollEl.value.scrollLeft = dragStart.sl - (e.clientX - dragStart.x)
-  scrollEl.value.scrollTop  = dragStart.st - (e.clientY - dragStart.y)
+  if (isSelecting.value) {
+    const cell = (e.target as HTMLElement).closest('td, th') as HTMLElement | null
+    if (!cell) return
+    const r = parseInt(cell.dataset.row ?? '0')
+    const c = parseInt(cell.dataset.col ?? '0')
+    if (selEnd.value?.r === r && selEnd.value?.c === c) return
+    selEnd.value = { r, c }
+    applyHighlight()
+  } else if (isDragging.value && scrollEl.value) {
+    scrollEl.value.scrollLeft = dragStart.sl - (e.clientX - dragStart.x)
+    scrollEl.value.scrollTop  = dragStart.st - (e.clientY - dragStart.y)
+  }
 }
 
-function onMouseUp() { isDragging.value = false }
-
+function onMouseUp() {
+  isDragging.value  = false
+  isSelecting.value = false
+}
 </script>
 
 <template>
@@ -116,6 +190,12 @@ function onMouseUp() { isDragging.value = false }
         <span /><span /><span />
       </div>
       <div class="ev-window__title">{{ filename }}</div>
+      <transition name="ev-fade">
+        <div v-if="hasHighlight" class="ev-highlight-badge" @click="clearHighlight">
+          <span class="ev-highlight-badge__label">{{ highlightLabel }}</span>
+          <span class="ev-highlight-badge__clear">✕</span>
+        </div>
+      </transition>
       <div class="ev-zoom">
         <button class="ev-zoom__btn" @click="zoomOut">−</button>
         <span class="ev-zoom__label" @click="zoomReset">{{ zoomLabel }}</span>
@@ -196,6 +276,36 @@ function onMouseUp() { isDragging.value = false }
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+/* ── highlight badge ── */
+.ev-highlight-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.1rem 0.45rem;
+  border-radius: 3px;
+  border: 1px solid rgba(255, 153, 102, 0.5);
+  background: rgba(255, 153, 102, 0.12);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.ev-highlight-badge:hover {
+  background: rgba(255, 153, 102, 0.22);
+  border-color: rgba(255, 153, 102, 0.8);
+}
+.ev-highlight-badge__label {
+  font-size: 0.6rem;
+  color: #ff9966;
+  font-family: monospace;
+}
+.ev-highlight-badge__clear {
+  font-size: 0.55rem;
+  color: rgba(255, 153, 102, 0.7);
+}
+.ev-fade-enter-active,
+.ev-fade-leave-active { transition: opacity 0.15s; }
+.ev-fade-enter-from,
+.ev-fade-leave-to    { opacity: 0; }
 
 /* ── zoom controls ── */
 .ev-zoom {
@@ -283,6 +393,7 @@ function onMouseUp() { isDragging.value = false }
   border: 1px solid #333;
   padding: 0.18rem 0.55rem;
   text-align: left;
+  cursor: cell;
 }
 .ev-window__scroll :deep(tr:first-child td) {
   background: #2d2d2d;
@@ -294,4 +405,11 @@ function onMouseUp() { isDragging.value = false }
 }
 .ev-window__scroll :deep(tr:nth-child(even)) { background: #1e1e1e; }
 .ev-window__scroll :deep(tr:nth-child(odd))  { background: #181818; }
+
+/* ── cell highlight (same orange as cards default) ── */
+.ev-window__scroll :deep(.ev-cell--highlight) {
+  background: rgba(255, 153, 102, 0.18) !important;
+  outline: 1px solid rgba(255, 153, 102, 0.55);
+  outline-offset: -1px;
+}
 </style>
