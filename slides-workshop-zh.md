@@ -133,7 +133,12 @@ cards:
 
 # 方法三：如果您有大量檔案、機密資料，或每月需要相同的報表？
 
-<div class="mt-6 grid grid-cols-2 gap-8">
+<div class="mb-4 bg-indigo-50 border border-indigo-300 rounded-xl px-5 py-3 flex items-center gap-3 text-sm">
+  <div class="text-xl">✅</div>
+  <div><span class="font-bold text-indigo-700">今日前提假設：</span> <span class="text-gray-800">您已成功設定好 AI Agent 工具（例如 Claude、Codex 等），並能夠正常送出提示詞。</span></div>
+</div>
+
+<div class="mt-2 grid grid-cols-2 gap-8">
   <div class="space-y-4">
     <div class="bg-blue-50 border border-blue-200 rounded-xl p-5">
       <div class="font-bold text-gray-800 mb-2">您要做的事</div>

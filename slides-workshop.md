@@ -133,7 +133,12 @@ cards:
 
 # What if you have many files, sensitive data, or need the same report every month?
 
-<div class="mt-6 grid grid-cols-2 gap-8">
+<div class="mb-4 bg-indigo-50 border border-indigo-300 rounded-xl px-5 py-3 flex items-center gap-3 text-sm">
+  <div class="text-xl">✅</div>
+  <div><span class="font-bold text-indigo-700">Assumption for today:</span> <span class="text-gray-800">You have already set up an AI agent tool — Claude, Codex, or similar — and can send it a prompt.</span></div>
+</div>
+
+<div class="mt-2 grid grid-cols-2 gap-8">
   <div class="space-y-4">
     <div class="bg-blue-50 border border-blue-200 rounded-xl p-5">
       <div class="font-bold text-gray-800 mb-2">What you do</div>
