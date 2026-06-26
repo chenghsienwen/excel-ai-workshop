@@ -24,6 +24,8 @@ duration: 35min
 
 # Excel + AI Workshop
 
+<div style="position:absolute;inset:0;background:rgba(0,0,0,0.4);z-index:0;pointer-events:none" />
+
 <LastModifiedDate />
 
 ---

@@ -16,6 +16,8 @@ duration: 60min
 
 ### Participant Guide
 
+<div style="position:absolute;inset:0;background:rgba(0,0,0,0.4);z-index:0;pointer-events:none" />
+
 <LastModifiedDate />
 
 ---
