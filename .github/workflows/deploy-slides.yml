@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - slides.md
+      - slides-workshop.md
       - components/**
       - layouts/**
       - pages/**
@@ -49,14 +50,23 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build slides
+      - name: Build main slides (RD)
         run: pnpm slidev build --base /excel-ai-workshop/
+
+      - name: Build workshop slides (student)
+        run: pnpm slidev build slides-workshop.md --base /excel-ai-workshop/workshop/ --out dist-workshop/
+
+      - name: Prepare slides artifact
+        run: |
+          mkdir -p slides-combined/workshop
+          cp -r dist/. slides-combined/
+          cp -r dist-workshop/. slides-combined/workshop/
 
       - name: Upload slides artifact
         uses: actions/upload-artifact@v4
         with:
           name: slides-dist
-          path: dist/
+          path: slides-combined/
           retention-days: 30
           overwrite: true
 
@@ -77,8 +87,9 @@ jobs:
 
       - name: Assemble site
         run: |
-          mkdir -p _site/bm-viewer
+          mkdir -p _site/bm-viewer _site/workshop
           cp -r dist/. _site/
+          cp -r dist-workshop/. _site/workshop/
           if [ "${{ steps.bm-viewer-artifact.outputs.found }}" = "true" ]; then
             cp bm-viewer-dist/index.html _site/bm-viewer/
           else

@@ -4,7 +4,9 @@
   "private": true,
   "scripts": {
     "build": "slidev build",
+    "build:workshop": "slidev build slides-workshop.md --base /excel-ai-workshop/workshop/ --out dist-workshop/",
     "dev": "slidev --open",
+    "dev:workshop": "slidev slides-workshop.md --open",
     "export": "slidev export"
   },
   "dependencies": {
