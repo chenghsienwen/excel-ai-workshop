@@ -3,7 +3,7 @@ theme: viewsonic-proav
 background: https://cover.sli.dev
 title: Excel + AI 工作坊 — 學員手冊
 info: |
-  ## 用 AI 轉換你的 Excel 報表，不需要任何程式基礎
+  ## 用 AI 轉換您的 Excel 報表，不需要任何程式基礎
 class: text-center
 drawings:
   persist: false
@@ -59,15 +59,15 @@ cards:
 
 ---
 
-# 如果你只需要從一個 Excel 檔案快速取得答案？
+# 方法一：如果您只需要從一個 Excel 檔案快速取得答案？
 
 <div class="mt-6 grid grid-cols-2 gap-8">
   <div class="space-y-4">
     <div class="bg-blue-50 border border-blue-200 rounded-xl p-5">
-      <div class="font-bold text-gray-800 mb-2">你要做的事</div>
+      <div class="font-bold text-gray-800 mb-2">您要做的事</div>
       <ul class="text-gray-700 space-y-2 text-sm">
         <li>📎 直接將檔案上傳至 ChatGPT 或 Claude</li>
-        <li>💬 用日常語言描述你想要的結果</li>
+        <li>💬 用日常語言描述您想要的結果</li>
         <li>📊 立即取得摘要、圖表或公式</li>
       </ul>
     </div>
@@ -83,7 +83,7 @@ cards:
   <div class="bg-orange-50 border border-orange-200 rounded-xl p-5">
     <div class="font-bold text-gray-800 mb-3">注意事項</div>
     <ul class="text-gray-700 space-y-3 text-sm">
-      <li>⚠️ 你的檔案會上傳至 AI 服務商的伺服器</li>
+      <li>⚠️ 您的檔案會上傳至 AI 服務商的伺服器</li>
       <li>⚠️ 不適合機密或客戶資料</li>
       <li>⚠️ 每次都需要手動重複操作</li>
     </ul>
@@ -95,16 +95,16 @@ cards:
 
 ---
 
-# 如果你的團隊已經在使用 Microsoft 365？
+# 方法二：如果您的團隊已經在使用 Microsoft 365？
 
 <div class="mt-6 grid grid-cols-2 gap-8">
   <div class="space-y-4">
     <div class="bg-blue-50 border border-blue-200 rounded-xl p-5">
-      <div class="font-bold text-gray-800 mb-2">你要做的事</div>
+      <div class="font-bold text-gray-800 mb-2">您要做的事</div>
       <ul class="text-gray-700 space-y-2 text-sm">
         <li>🖱️ 開啟 Excel Online 或 Teams</li>
         <li>💬 請 Copilot 合併、樞紐或摘要資料</li>
-        <li>📈 結果直接顯示在你的試算表中</li>
+        <li>📈 結果直接顯示在您的試算表中</li>
       </ul>
     </div>
     <div class="bg-green-50 border border-green-200 rounded-xl p-5">
@@ -131,22 +131,22 @@ cards:
 
 ---
 
-# 如果你有大量檔案、機密資料，或每月需要相同的報表？
+# 方法三：如果您有大量檔案、機密資料，或每月需要相同的報表？
 
 <div class="mt-6 grid grid-cols-2 gap-8">
   <div class="space-y-4">
     <div class="bg-blue-50 border border-blue-200 rounded-xl p-5">
-      <div class="font-bold text-gray-800 mb-2">你要做的事</div>
+      <div class="font-bold text-gray-800 mb-2">您要做的事</div>
       <ul class="text-gray-700 space-y-2 text-sm">
-        <li>💬 向 AI 描述你的 Excel 結構</li>
-        <li>🤖 AI 撰寫 Python 程式，你貼上並執行</li>
+        <li>💬 向 AI 描述您的 Excel 結構</li>
+        <li>🤖 AI 撰寫 Python 程式，您貼上並執行</li>
         <li>▶️ 程式在本機執行，幾秒內輸出結果</li>
       </ul>
     </div>
     <div class="bg-green-50 border border-green-200 rounded-xl p-5">
       <div class="font-bold text-gray-800 mb-2">適合情境</div>
       <ul class="text-gray-700 space-y-2 text-sm">
-        <li>✅ 機密或內部資料，不離開你的電腦</li>
+        <li>✅ 機密或內部資料，不離開您的電腦</li>
         <li>✅ 一次處理大量檔案</li>
         <li>✅ 每月重複報表，一個指令搞定</li>
       </ul>
@@ -161,7 +161,7 @@ cards:
 
 ---
 
-# 哪種方式適合你？
+# 哪種方式適合您？
 
 <div class="mt-6 overflow-x-auto">
   <table class="w-full text-sm border-collapse">
@@ -216,7 +216,7 @@ cards:
   <div class="bg-red-50 border border-red-200 rounded-xl p-6">
     <div class="text-xl font-bold text-red-500 mb-4">每個月...</div>
     <ul class="space-y-3 text-gray-700">
-      <li>📂 開啟 4 個不同的 Excel 檔案</li>
+      <li>📂 開啟多個不同的 Excel 檔案</li>
       <li>✂️ 手動複製貼上到主表</li>
       <li>🔢 修復損壞的公式</li>
       <li>📊 從頭重建樞紐分析表</li>
@@ -226,9 +226,9 @@ cards:
   <div class="bg-green-50 border border-green-200 rounded-xl p-6">
     <div class="text-xl font-bold text-green-500 mb-4">今天之後...</div>
     <ul class="space-y-3 text-gray-700">
-      <li>💬 向 AI 描述你想要的結果</li>
+      <li>💬 向 AI 描述您想要的結果</li>
       <li>🤖 AI 撰寫自動化程式</li>
-      <li>▶️ 你按一下執行，就這樣</li>
+      <li>▶️ 您按一下執行，就這樣</li>
       <li>📈 幾秒內輸出結果</li>
       <li>🎉 每次結果都一樣，不需重做</li>
     </ul>
@@ -241,15 +241,15 @@ cols: 2
 cards:
   - title: 流程
     items:
-      - 向 AI 描述你的 Excel 結構
-      - AI 為你撰寫 Python 程式
-      - 你在本機執行程式
+      - 向 AI 描述您的 Excel 結構
+      - AI 為您撰寫 Python 程式
+      - 您在本機執行程式
       - 輸出結果自動產生，不需手動操作
-  - title: 重點：你的資料安全無虞
+  - title: 重點：您的資料安全無虞
     items:
-      - AI 不會看到你的實際數字
-      - 你只需分享欄位名稱與結構
-      - 程式在你的電腦上執行
+      - AI 不會看到您的實際數字
+      - 您只需分享欄位名稱與結構
+      - 程式在您的電腦上執行
       - 零資料上傳至任何雲端
 ---
 
@@ -305,7 +305,7 @@ cards:
 
 <script setup>
 const flow = `flowchart LR
-    A[描述\\nExcel 結構] --> B[告訴 AI\\n你的需求]
+    A[描述\\nExcel 結構] --> B[告訴 AI\\n您的需求]
     B --> C[AI 撰寫\\n程式碼]
     C --> D[在本機\\n執行程式]
     D --> E[確認\\n輸出結果]`
@@ -325,7 +325,7 @@ layout: chapter
 
 ---
 
-# 步驟一：向 AI 描述你的資料
+# 步驟一：向 AI 描述您的資料
 
 <ChatWindow class="text-left mt-6">
   <template #question>
@@ -333,7 +333,7 @@ layout: chapter
   </template>
 
   <template #response>
-    了解了——我會讀取你資料夾中的每個 <code>.xlsx</code> 檔案，自動從檔名中提取<b>產品名稱</b>和<b>年份</b>，並將 12 個月份欄位重新整理成每月一列的格式。最終輸出為一個 CSV 檔案，共 7 個欄位：<code>product, year, region, rev_op_type, sales_budget_type, month, amount</code>。所有檔案合併成一張表，結構一致，不需要手動複製貼上。
+    了解了——我會讀取您資料夾中的每個 <code>.xlsx</code> 檔案，自動從檔名中提取<b>產品名稱</b>和<b>年份</b>，並將 12 個月份欄位重新整理成每月一列的格式。最終輸出為一個 CSV 檔案，共 7 個欄位：<code>product, year, region, rev_op_type, sales_budget_type, month, amount</code>。所有檔案合併成一張表，結構一致，不需要手動複製貼上。
   </template>
 </ChatWindow>
 
@@ -349,10 +349,10 @@ layout: chapter
   <template #response>
     我會建立一個檔案叫 <code>main.py</code>。執行方式如下：<br><br>
     1. 開啟終端機（或命令提示字元）<br>
-    2. 切換到你的檔案所在資料夾<br>
+    2. 切換到您的檔案所在資料夾<br>
     3. 輸入：<code>python main.py</code> 然後按 Enter<br>
     4. 結果會存在 <code>output/raw_report.csv</code><br><br>
-    就這樣。程式會自動處理讀取、整理和合併，你完全不需要碰任何公式。
+    就這樣。程式會自動處理讀取、整理和合併，您完全不需要碰任何公式。
   </template>
 
   <template #question2>
@@ -375,7 +375,7 @@ layout: chapter
 
   <template #response>
     我會再建立兩份報表：<br><br>
-    <b>第一層——期間合計</b>：依產品、年份、地區分組，計算你選擇的任意期間內的實際與預算總和。<br><br>
+    <b>第一層——期間合計</b>：依產品、年份、地區分組，計算您選擇的任意期間內的實際與預算總和。<br><br>
     <b>第二層——差距與成長指標</b>：計算實際與預算的差距、預算達成率（實際／預算）、年度同比變化（YoY）。這些都是管理報表常用的數字，AI 會從第一層自動推算出來。
   </template>
 </ChatWindow>
@@ -384,7 +384,7 @@ layout: chapter
 layout: chapter
 ---
 
-# 換你試試看
+# 換您試試看
 
 ---
 
@@ -401,12 +401,12 @@ layout: chapter
   </div>
 
   <div class="bg-blue-50 border border-blue-200 rounded-xl p-5">
-    <div class="text-lg font-bold text-blue-700 mb-2">你的任務（10 分鐘）</div>
-    <p class="text-gray-800">開啟 <span class="font-bold">Claude</span> 或 <span class="font-bold">ChatGPT</span>，貼上以下提示詞，將括號內容替換成你自己的 Excel 情境：</p>
+    <div class="text-lg font-bold text-blue-700 mb-2">您的任務（10 分鐘）</div>
+    <p class="text-gray-800">開啟 <span class="font-bold">Claude</span> 或 <span class="font-bold">ChatGPT</span>，貼上以下提示詞，將括號內容替換成您自己的 Excel 情境：</p>
     <div class="bg-white border border-gray-300 rounded-lg p-4 mt-3 font-mono text-sm leading-relaxed text-gray-900">
-      我有 Excel 檔案，包含 [描述你的欄位]。<br>
+      我有 Excel 檔案，包含 [描述您的欄位]。<br>
       每個檔案代表 [什麼？月份？地區？產品？]。<br>
-      我想要 [描述你需要的結果]。<br>
+      我想要 [描述您需要的結果]。<br>
       請幫我寫一個 Python 程式，並告訴我如何執行。<br>
       範例提示：<br>
       讀取 app/bm_report/docs/plan.md，以 raw_data 為輸入、output/ 為輸出，依照 plan.md 實作程式，並執行測試驗證結果 <br>
@@ -418,8 +418,8 @@ layout: chapter
     <div class="font-bold text-green-700 mb-2">與大家分享：</div>
     <ul class="text-gray-800 space-y-1 text-sm">
       <li>AI 給了什麼建議？</li>
-      <li>回應內容你看得懂嗎？</li>
-      <li>你追問了什麼問題？</li>
+      <li>回應內容您看得懂嗎？</li>
+      <li>您追問了什麼問題？</li>
     </ul>
   </div>
 </div>
@@ -430,9 +430,9 @@ cols: 2
 fill: true
 cards:
   - title: "1. 先計畫，再寫程式"
-    text: 先描述你的資料和目標，確認 AI 理解你的結構之後，再請它產生程式碼
+    text: 先描述您的資料和目標，確認 AI 理解您的結構之後，再請它產生程式碼
   - title: "2. 給 AI 足夠的背景"
-    text: 提供欄位名稱和範例資料列，你描述得越具體，AI 的輸出就越準確
+    text: 提供欄位名稱和範例資料列，您描述得越具體，AI 的輸出就越準確
   - title: "3. 一步一步來"
     text: 一次請 AI 做一件事，確認每個輸出結果後再進行下一步
   - title: "4. 務必驗證"
@@ -457,7 +457,7 @@ layout: chapter
   </template>
 
   <template #response>
-    可以——使用 <b>Streamlit</b>，這是一個免費的 Python 套件，可以把 CSV 資料變成你在瀏覽器中開啟的網頁儀表板。AI 會幫你產生完整的應用程式：讀取你的 CSV 檔案、在各分頁顯示不同報表，並支援依產品、地區或日期篩選。執行只需一個指令：<code>streamlit run app.py</code>。全部在本機執行，無雲端、無帳號、資料不外流。
+    可以——使用 <b>Streamlit</b>，這是一個免費的 Python 套件，可以把 CSV 資料變成您在瀏覽器中開啟的網頁儀表板。AI 會幫您產生完整的應用程式：讀取您的 CSV 檔案、在各分頁顯示不同報表，並支援依產品、地區或日期篩選。執行只需一個指令：<code>streamlit run app.py</code>。全部在本機執行，無雲端、無帳號、資料不外流。
   </template>
 </ChatWindow>
 
@@ -465,7 +465,7 @@ layout: chapter
 
 # 成果展示
 
-## 你打造了：
+## 您打造了：
 
 ### 一條 AI 輔助的資料處理流程
 ### 由 Python + Excel 驅動
