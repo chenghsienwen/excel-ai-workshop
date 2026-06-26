@@ -6,6 +6,7 @@ on:
     paths:
       - slides.md
       - slides-workshop.md
+      - slides-workshop-zh.md
       - components/**
       - layouts/**
       - pages/**
@@ -56,11 +57,15 @@ jobs:
       - name: Build workshop slides (student)
         run: pnpm slidev build slides-workshop.md --base /excel-ai-workshop/workshop/ --out dist-workshop/
 
+      - name: Build workshop slides (Traditional Chinese)
+        run: pnpm slidev build slides-workshop-zh.md --base /excel-ai-workshop/workshop-zh/ --out dist-workshop-zh/
+
       - name: Prepare slides artifact
         run: |
-          mkdir -p slides-combined/workshop
+          mkdir -p slides-combined/workshop slides-combined/workshop-zh
           cp -r dist/. slides-combined/
           cp -r dist-workshop/. slides-combined/workshop/
+          cp -r dist-workshop-zh/. slides-combined/workshop-zh/
 
       - name: Upload slides artifact
         uses: actions/upload-artifact@v4
@@ -87,9 +92,10 @@ jobs:
 
       - name: Assemble site
         run: |
-          mkdir -p _site/bm-viewer _site/workshop
+          mkdir -p _site/bm-viewer _site/workshop _site/workshop-zh
           cp -r dist/. _site/
           cp -r dist-workshop/. _site/workshop/
+          cp -r dist-workshop-zh/. _site/workshop-zh/
           if [ "${{ steps.bm-viewer-artifact.outputs.found }}" = "true" ]; then
             cp bm-viewer-dist/index.html _site/bm-viewer/
           else
