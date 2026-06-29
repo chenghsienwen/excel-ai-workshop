@@ -410,7 +410,7 @@ layout: chapter
   <div class="bg-blue-50 border border-blue-200 rounded-xl p-5">
     <div class="text-lg font-bold text-blue-700 mb-2">您的任務（10 分鐘）</div>
     <p class="text-gray-800">開啟 <span class="font-bold">Claude</span> 或 <span class="font-bold">ChatGPT</span>，貼上以下提示詞，將括號內容替換成您自己的 Excel 情境：</p>
-    <div class="bg-white border border-gray-300 rounded-lg p-4 mt-3 font-mono text-sm leading-relaxed text-gray-900">
+    <div class="bg-white border border-gray-300 rounded-lg p-4 mt-3 font-mono text-sm leading-relaxed text-gray-900 select-text cursor-text">
       我有 Excel 檔案，包含 [描述您的欄位]。<br>
       每個檔案代表 [什麼？月份？地區？產品？]。<br>
       我想要 [描述您需要的結果]。<br>

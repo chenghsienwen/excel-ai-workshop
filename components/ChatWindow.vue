@@ -124,6 +124,7 @@ onBeforeUnmount(() => ro?.disconnect())
   flex: 1;
   min-height: 0;
   overflow-y: auto;
+  user-select: text;
 }
 
 .chat-messages::-webkit-scrollbar        { width: 4px; }

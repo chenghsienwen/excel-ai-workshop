@@ -410,7 +410,7 @@ layout: chapter
   <div class="bg-blue-50 border border-blue-200 rounded-xl p-5">
     <div class="text-lg font-bold text-blue-700 mb-2">Your Task (10 minutes)</div>
     <p class="text-gray-800">Open <span class="font-bold">Claude</span> or <span class="font-bold">ChatGPT</span> and paste this prompt — replace the brackets with your own Excel situation:</p>
-    <div class="bg-white border border-gray-300 rounded-lg p-4 mt-3 font-mono text-sm leading-relaxed text-gray-900">
+    <div class="bg-white border border-gray-300 rounded-lg p-4 mt-3 font-mono text-sm leading-relaxed text-gray-900 select-text cursor-text">
       I have Excel files with [describe your columns here].<br>
       Each file represents [what — a month? a region? a product?].<br>
       I want to [describe what result you need].<br>
