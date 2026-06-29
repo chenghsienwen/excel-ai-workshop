@@ -10,6 +10,10 @@ drawings:
 transition: slide-left
 comark: true
 duration: 60min
+head:
+  - - meta
+    - name: viewport
+      content: "width=device-width, initial-scale=1, user-scalable=yes, maximum-scale=5"
 ---
 
 # Excel + AI 工作坊

@@ -20,6 +20,10 @@ transition: slide-left
 comark: true
 # duration of the presentation
 duration: 35min
+head:
+  - - meta
+    - name: viewport
+      content: "width=device-width, initial-scale=1, user-scalable=yes, maximum-scale=5"
 ---
 
 # Excel + AI Workshop
