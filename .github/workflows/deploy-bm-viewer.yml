@@ -5,6 +5,10 @@ on:
     branches: [main]
     paths:
       - app/bm_report_viewer/**
+  workflow_run:
+    workflows: ["Deploy Slides to GitHub Pages"]
+    types: [completed]
+    branches: [main]
   workflow_dispatch:
 
 permissions:

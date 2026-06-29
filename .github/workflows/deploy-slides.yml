@@ -55,10 +55,10 @@ jobs:
         run: pnpm slidev build --base /excel-ai-workshop/
 
       - name: Build workshop slides (student)
-        run: pnpm slidev build slides-workshop.md --base /excel-ai-workshop/workshop/ --out dist-workshop/
+        run: pnpm slidev build slides-workshop.md --base /excel-ai-workshop/workshop/ --out dist-workshop/ --router-mode hash
 
       - name: Build workshop slides (Traditional Chinese)
-        run: pnpm slidev build slides-workshop-zh.md --base /excel-ai-workshop/workshop-zh/ --out dist-workshop-zh/
+        run: pnpm slidev build slides-workshop-zh.md --base /excel-ai-workshop/workshop-zh/ --out dist-workshop-zh/ --router-mode hash
 
       - name: Prepare slides artifact
         run: |

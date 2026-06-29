@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "build": "slidev build",
-    "build:workshop": "slidev build slides-workshop.md --base /excel-ai-workshop/workshop/ --out dist-workshop/",
-    "build:workshop-zh": "slidev build slides-workshop-zh.md --base /excel-ai-workshop/workshop-zh/ --out dist-workshop-zh/",
+    "build:workshop": "slidev build slides-workshop.md --base /excel-ai-workshop/workshop/ --out dist-workshop/ --router-mode hash",
+    "build:workshop-zh": "slidev build slides-workshop-zh.md --base /excel-ai-workshop/workshop-zh/ --out dist-workshop-zh/ --router-mode hash",
     "dev": "slidev --open",
     "dev:workshop": "slidev slides-workshop.md --open",
     "dev:workshop-zh": "slidev slides-workshop-zh.md --open",
