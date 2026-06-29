@@ -1,0 +1,7 @@
+/* Allow browser-native pinch-to-zoom on mobile.
+   VueUse usePointerSwipe sets touch-action: pan-y via inline style on #page-root,
+   which blocks pinch-zoom. !important overrides the inline style while keeping
+   horizontal swipe available for Slidev's JS navigation handler. */
+#page-root {
+  touch-action: pan-y pinch-zoom !important;
+}
