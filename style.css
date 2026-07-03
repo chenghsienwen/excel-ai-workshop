@@ -5,3 +5,20 @@
 #page-root {
   touch-action: pan-y pinch-zoom !important;
 }
+
+/* Allow all slide body text to be selected by the viewer.
+   Components that intentionally disable selection (ExcelViewer, TextLoader)
+   set user-select: none directly on their own elements, which still wins
+   over this ancestor rule. */
+.slidev-layout {
+  user-select: text;
+}
+
+/* The theme sets `.slidev-layout p/li/td { color: var(--vs-fg-dim) }` for its
+   dark canvas, which outranks the single-class `.text-black` utility
+   ((0,1,1) beats (0,1,0)) no matter which tag carries the class. Scope the
+   override on the class itself so it wins on light-background cards. */
+.slidev-layout .text-black,
+.slidev-layout .text-black li {
+  color: #000;
+}
